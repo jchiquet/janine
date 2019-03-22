@@ -1,0 +1,18 @@
+Package: janine
+Title: Just Another Network INference mEthod
+Version: 0.0.0.9000
+Authors@R: 
+    person(given = "Julien",
+           family = "Chiquet",
+           role = c("aut", "cre"),
+           email = "julien.chiquet@inra.fr")
+Description: What the package does (one paragraph).
+License: GPL-3
+Encoding: UTF-8
+LazyData: true
+RoxygenNote: 6.1.1
+Imports: 
+    Matrix,
+    igraph,
+    rmutil,
+    magrittr
