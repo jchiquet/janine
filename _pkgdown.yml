@@ -1,0 +1,23 @@
+templates:
+  params:
+    bootswatch: readable
+
+navbar:
+  title: "Janine"
+  type: inverse
+  left:
+    - icon: fa-home
+    - text: "Home"
+      href: index.html
+    - text: "Reference"
+      href: "reference/index.html"
+  right:
+    - icon: fa-github
+      href: https://github.com/jchiquet/PLNmodels
+
+reference:
+- title: All functions
+  desc: ~
+  contents:
+  - '`VEM_SBM_laplace`'
+  - '`rSBMLaplace`'
