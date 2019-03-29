@@ -15,6 +15,7 @@ Imports:
     Matrix,
     igraph,
     rmutil,
+    mvtnorm,
     magrittr
 Suggests: 
     testthat,

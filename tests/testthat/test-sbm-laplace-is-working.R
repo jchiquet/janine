@@ -16,8 +16,8 @@ set.seed(97857)
 Lambda <- matrix(c(1, 2, 3, 2, 1, 4, 3, 4, 1), 3, 3)
 p <- 200
 alpha <- c(1/2, 1/4, 1/4)
-Q <- length(alpha)
-sbm   <- rSBMLaplace(p, Lambda, alpha)
+K <- length(alpha)
+sbm   <- rSBM_Laplace(p, Lambda, alpha)
 
 clustering  <- V(sbm)$membership
 data_matrix <- sbm %>% as_adj(attr = "weight")
@@ -28,8 +28,8 @@ test_that("SBM Laplace is working", {
   tol_ARI <- .9
   tol_ref <- 1e-2
 
-  cl0 <- kmeans(data_matrix, centers = Q, nstart = 10)$cl
-  out <- VEM_SBM_laplace(data_matrix, Q, cl0)
+  cl0 <- kmeans(data_matrix, centers = K, nstart = 10)$cl
+  out <- estimate_structure(data_matrix, K, cl0)
 
   ## expect SBM clustering is working
   expect_gt(ARI(out$membership, clustering), tol_ARI)
