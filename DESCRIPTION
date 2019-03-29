@@ -17,4 +17,5 @@ Imports:
     rmutil,
     magrittr
 Suggests: 
-    testthat
+    testthat,
+    aricode
