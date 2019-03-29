@@ -4,12 +4,12 @@
 \alias{rmvnorm_SBM}
 \title{SBM-structured multivariate Gaussian observation}
 \usage{
-rmvnorm_SBM(n, SBMLaplace)
+rmvnorm_SBM(n, sbm)
 }
 \arguments{
 \item{n}{integer, the sample size}
 
-\item{sbm}{an SBM, as outputed by the \code{\link{rSBMLaplace}} function}
+\item{sbm}{an SBM, as outputed by the \code{\link{rSBM_Laplace}} function}
 }
 \description{
 Draw observations from a multivariate Gaussian distribution with SBM-structured precision matrix
@@ -19,6 +19,6 @@ n <- 200; d <- 100; K <- 3
 Lambda <- matrix(c(1, 2, 3, 2, 1, 4, 3, 4, 1), 3, 3)
 alpha <- c(1/2, 1/4, 1/4)
 K <- length(alpha)
-sbm   <- rSBMLaplace(d, Lambda, alpha)
+sbm   <- rSBM_Laplace(d, Lambda, alpha)
 X <- rmvnorm_SBM(n, sbm)
 }

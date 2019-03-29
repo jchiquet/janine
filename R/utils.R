@@ -29,7 +29,7 @@ rSBM_Laplace <- function(p, Lambda, alpha = c(1)) {
 #' Draw observations from a multivariate Gaussian distribution with SBM-structured precision matrix
 #'
 #' @param n integer, the sample size
-#' @param sbm an SBM, as outputed by the \code{\link{rSBMLaplace}} function
+#' @param sbm an SBM, as outputed by the \code{\link{rSBM_Laplace}} function
 #'
 #' @importFrom igraph as_adj
 #' @importFrom mvtnorm rmvnorm
@@ -38,11 +38,11 @@ rSBM_Laplace <- function(p, Lambda, alpha = c(1)) {
 #' Lambda <- matrix(c(1, 2, 3, 2, 1, 4, 3, 4, 1), 3, 3)
 #' alpha <- c(1/2, 1/4, 1/4)
 #' K <- length(alpha)
-#' sbm   <- rSBMLaplace(d, Lambda, alpha)
+#' sbm   <- rSBM_Laplace(d, Lambda, alpha)
 #' X <- rmvnorm_SBM(n, sbm)
 #' @export
-rmvnorm_SBM <- function(n, SBMLaplace) {
-  Omega <- as_adj(SBMLaplace, attr = "weight")
+rmvnorm_SBM <- function(n, sbm) {
+  Omega <- as_adj(sbm, attr = "weight")
   diag(Omega) <- colSums(abs(Omega))
   Sigma <- as.matrix(chol2inv(chol(Omega)))
   res <- mvtnorm::rmvnorm(n, sigma = Sigma)

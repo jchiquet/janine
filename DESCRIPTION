@@ -1,6 +1,6 @@
 Package: janine
 Title: Just Another Network INference mEthod
-Version: 0.0.0.9000
+Version: 0.1-9000
 Authors@R: 
     person(given = "Julien",
            family = "Chiquet",
@@ -16,6 +16,7 @@ Imports:
     igraph,
     rmutil,
     mvtnorm,
+    glassoFast,
     magrittr
 Suggests: 
     testthat,
