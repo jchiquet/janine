@@ -12,6 +12,7 @@ error <- function(theta_hat, theta, sort = FALSE) {
   err
 }
 
+set.seed(97857)
 Lambda <- matrix(c(1, 2, 3, 2, 1, 4, 3, 4, 1), 3, 3)
 p <- 200
 alpha <- c(1/2, 1/4, 1/4)
