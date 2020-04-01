@@ -6,7 +6,7 @@ entropy <- function(distr) {
 #' Estimation of the latent structure of the network
 #'
 #' The underlying network is assumed to be drawn from a Stochastic Bloc Model
-#' with Laplace emission law for the edges. This function use a variational EM algorithm
+#' with Gaussian emission law for the edges. This function use a variational EM algorithm
 #' to estimate such a model.
 #'
 #' @param adj_matrix a symmetric weighted adjacency matrix
@@ -79,10 +79,8 @@ estimate_structure <- function(adj_matrix, n_blocks, init_clustering = kmeans(ad
   vBIC <- best$J[length(best$J)] - .5*(n_blocks*(n_blocks+1)/2)*log(p*(p - 1)/2) + (n_blocks - 1)*log(p)
   vICL <- vBIC - entropy(best$tau)
 
-  return(
-    list(theta = best$theta,
-         tau = best$tau,
-         membership = apply(best$tau, 1, which.max),
-         J = best$J, vICL = vICL, vBIC= vBIC)
-    )
+  list(theta = best$theta,
+       tau = best$tau,
+       membership = apply(best$tau, 1, which.max),
+       J = best$J, vICL = vICL, vBIC= vBIC)
 }

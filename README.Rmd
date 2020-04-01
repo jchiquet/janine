@@ -16,7 +16,7 @@ knitr::opts_chunk$set(
 
 [![Travis build status](https://travis-ci.org/jchiquet/janine.svg?branch=master)](https://travis-ci.org/jchiquet/janine)
 
-The goal of janine is to perform sparse network reconstruction when the underlying network is supposed to have a SBM-Laplace distribution.
+The goal of janine is to perform sparse network reconstruction when the underlying network is supposed to have an SBM-(Gaussian) distribution.
 
 ## Installation
 
