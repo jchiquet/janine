@@ -100,8 +100,7 @@
 <a href="#preliminaries" class="anchor"></a>Preliminaries</h2>
 <div class="sourceCode" id="cb1"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">janine</span>)
 <span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">rggm</span>)     <span class="co"># GGM data generation</span>
-<span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">corrplot</span>) <span class="co"># fancy graphical output</span>
-<span class="co">#&gt; corrplot 0.84 loaded</span></pre></body></html></div>
+<span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">corrplot</span>) <span class="co"># fancy graphical output</span></pre></body></html></div>
 </div>
 <div id="generating-gaussian-data-from-a-graphical-model-with-sbm-structure" class="section level2">
 <h2 class="hasAnchor">
@@ -127,7 +126,7 @@
 <a href="#network-inference-with-janine" class="anchor"></a>Network Inference with Janine</h2>
 <p><code>Janine</code> (a reference to the <code>Simone</code> package, from which Janine is a reload/remake), specially targeting GGM inference with underlying blockwise pattern governed by an SBM. The inference alternate adaptive graphical-LASSO and SBM with variational EM. The weigths in the graphical-Lasso are</p>
 
-<p>where <span class="math inline">\(\hat{\mathcal{G}}\)</span> is the current estimate of the network and <span class="math inline">\(\hat{\mathbb{P}}(i \leftrightarrow j))\)</span> is the estimated probability of connection between any dyad under the fitted SBM (that is, conditional on the block of the nodes).</p>
+<p>where <span class="math inline">\(\hat{\mathcal{G}}\)</span> is the current estimate of the network and <span class="math inline">\(\hat{\mathbb{P}}(i \leftrightarrow j)\)</span> is the estimated probability of connection between any dyad under the fitted SBM (that is, conditional on the block of the nodes).</p>
 <p>The overall amount of sparsity is tuned by the argument <code>penalty</code>, and the number of blocks in the SBM is fixed by argument <code>n_blocks</code></p>
 <div class="sourceCode" id="cb6"><html><body><pre class="r"><span class="no">out</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/janine.html">janine</a></span>(<span class="no">X</span>, <span class="kw">penalty</span> <span class="kw">=</span> <span class="fl">0.075</span>, <span class="kw">n_blocks</span> <span class="kw">=</span> <span class="no">nbBlock</span>)</pre></body></html></div>
 <p>In this easy data setting, the method seems to work well, exhibiting a nice convergence of the objective function (the penalized negative log-likelihood):</p>
