@@ -112,9 +112,9 @@
 <span class="no">blockProp</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">1</span>/<span class="fl">3</span>, <span class="fl">1</span>/<span class="fl">3</span>, <span class="fl">1</span>/<span class="fl">3</span>)   <span class="co"># group proportions</span>
 <span class="no">nbBlock</span>   <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/length.html">length</a></span>(<span class="no">blockProp</span>) <span class="co"># number of blocks</span>
 <span class="no">connectParam</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/diag.html">diag</a></span>(<span class="fl">.4</span>, <span class="no">nbBlock</span>) + <span class="fl">0.01</span> <span class="co"># connectivity matrix: affiliation network</span></pre></body></html></div>
-<p>THe network itself is then sampled:</p>
+<p>The network itself is then sampled:</p>
 <div class="sourceCode" id="cb3"><html><body><pre class="r"><span class="no">mySBM</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/rggm/man/rSBM.html">rSBM</a></span>(<span class="no">nNodes</span>, <span class="no">connectParam</span>, <span class="no">blockProp</span>)</pre></body></html></div>
-<p>From this networjk we build a signed precision matrix</p>
+<p>From this network we build a signed precision matrix</p>
 <div class="sourceCode" id="cb4"><html><body><pre class="r"><span class="no">Omega</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/rggm/man/graph2prec.html">graph2prec</a></span>(<span class="no">mySBM</span>, <span class="kw">cond_var</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span>(<span class="fl">1</span>, <span class="no">nNodes</span>), <span class="kw">neg_prop</span> <span class="kw">=</span> <span class="fl">0.5</span>)
 <span class="no">Sigma</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/solve.html">solve</a></span>(<span class="no">Omega</span>)</pre></body></html></div>
 <p>We can finally sample some multivariate Gaussian data.</p>
@@ -126,8 +126,9 @@
 <h2 class="hasAnchor">
 <a href="#network-inference-with-janine" class="anchor"></a>Network Inference with Janine</h2>
 <p><code>Janine</code> (a reference to the <code>Simone</code> package, from which Janine is a reload/remake), specially targeting GGM inference with underlying blockwise pattern governed by an SBM. The inference alternate adaptive graphical-LASSO and SBM with variational EM. The weigths in the graphical-Lasso are</p>
-<p>\begin{equation}  = , \end{equation where <span class="math inline">\(\mathcal{G}\)</span> is the current estimate of the network and <span class="math inline">\(\hat{\mathbb{P}}(i \leftrightarrow j))\)</span> is the probability of connection between any dyad under the fitted SBM.</p>
-<p>The overall amount of sparsity is tuned by the argument <code>penalty</code>, and the number of block in the SBM is fixed by argument <code>n_blocks</code></p>
+
+<p>where <span class="math inline">\(\hat{\mathcal{G}}\)</span> is the current estimate of the network and <span class="math inline">\(\hat{\mathbb{P}}(i \leftrightarrow j))\)</span> is the estimated probability of connection between any dyad under the fitted SBM (that is, conditional on the block of the nodes).</p>
+<p>The overall amount of sparsity is tuned by the argument <code>penalty</code>, and the number of blocks in the SBM is fixed by argument <code>n_blocks</code></p>
 <div class="sourceCode" id="cb6"><html><body><pre class="r"><span class="no">out</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/janine.html">janine</a></span>(<span class="no">X</span>, <span class="kw">penalty</span> <span class="kw">=</span> <span class="fl">0.075</span>, <span class="kw">n_blocks</span> <span class="kw">=</span> <span class="no">nbBlock</span>)</pre></body></html></div>
 <p>In this easy data setting, the method seems to work well, exhibiting a nice convergence of the objective function (the penalized negative log-likelihood):</p>
 <div class="sourceCode" id="cb7"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.html">plot</a></span>(<span class="no">out</span>$<span class="no">objective</span>, <span class="kw">type</span> <span class="kw">=</span> <span class="st">"b"</span>, <span class="kw">xlab</span> <span class="kw">=</span> <span class="st">'iteration'</span>, <span class="kw">ylab</span> <span class="kw">=</span> <span class="st">'objective'</span>)</pre></body></html></div>
