@@ -15,11 +15,9 @@ knitr::opts_chunk$set(
 ```
 
 
-
-
 ## Preliminaries
 
-```{r setup}
+```{r setup, message = FALSE}
 library(janine)   
 library(rggm)     # GGM data generation
 library(corrplot) # fancy graphical output
@@ -65,10 +63,10 @@ X <- rmgaussian(n, means, Sigma)
 `Janine` (a reference to the `Simone` package, from which Janine is a reload/remake), specially targeting GGM inference with underlying blockwise pattern governed by an SBM. The inference alternate adaptive graphical-LASSO and SBM with variational EM. The weigths in the graphical-Lasso are
 
 \begin{equation}
-  \mathbf{W} = \frac{(1 - \hat{\mathbb{P}}(i \leftrightarrow j)) }{1 - \mathrm{density}(\hat{\mathcal{G}})},
+  w_{ij} = \frac{\left(1 - \hat{\mathbb{P}}(i \leftrightarrow j)\right)}{1 - \mathrm{density}(\hat{\mathcal{G}})},
 \end{equation}
 
-where $\hat{\mathcal{G}}$ is the current estimate of the network and $\hat{\mathbb{P}}(i \leftrightarrow j))$ is the estimated probability of connection between any dyad under the fitted SBM (that is, conditional on the block of the nodes).
+where $\hat{\mathcal{G}}$ is the current estimate of the network and $\hat{\mathbb{P}}(i \leftrightarrow j)$ is the estimated probability of connection between any dyad under the fitted SBM (that is, conditional on the block of the nodes).
 
 The overall amount of sparsity is tuned by the argument `penalty`, and the number of blocks in the SBM is fixed by argument `n_blocks`
 
