@@ -18,8 +18,7 @@ Imports:
     glassoFast,
     magrittr
 Suggests: 
-    testthat,
-    aricode,
+    corrplot,
     knitr,
     rmarkdown
 VignetteBuilder: knitr
