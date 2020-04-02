@@ -8,7 +8,7 @@
 #' @param epsilon convergence threshold (absolute relative change in objective function), default to 1e-3.
 #' @param max_iter integer for the maximal number of iteration. Default to 20
 #' @export
-janine <- function(data, penalty, n_blocks, epsilon = 1e-4, max_iter = 20, penalize_diagonal = TRUE) {
+janine <- function(data, penalty, n_blocks, epsilon = 1e-4, max_iter = 20, penalize_diagonal = FALSE) {
 
   n <- nrow(data)
   d <- ncol(X)
