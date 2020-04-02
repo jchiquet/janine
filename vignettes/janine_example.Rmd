@@ -39,13 +39,13 @@ nbBlock   <- length(blockProp) # number of blocks
 connectParam <- diag(.4, nbBlock) + 0.01 # connectivity matrix: affiliation network
 ```
 
-THe network itself is then sampled:
+The network itself is then sampled:
 
 ```{r SBM structure}
 mySBM <- rSBM(nNodes, connectParam, blockProp)
 ```
 
-From this networjk we build a signed precision matrix 
+From this network we build a signed precision matrix 
 
 ```{r GGM}
 Omega <- graph2prec(mySBM, cond_var = rep(1, nNodes), neg_prop = 0.5)
@@ -65,11 +65,12 @@ X <- rmgaussian(n, means, Sigma)
 `Janine` (a reference to the `Simone` package, from which Janine is a reload/remake), specially targeting GGM inference with underlying blockwise pattern governed by an SBM. The inference alternate adaptive graphical-LASSO and SBM with variational EM. The weigths in the graphical-Lasso are
 
 \begin{equation}
-  \mathbf{W} = \frac{(1 - \hat{\mathbb{P}}(i \leftrightarrow j)) }{1 - \mathrm{density}(\mathcal{G})},
-\end{equation
-where $\mathcal{G}$ is the current estimate of the network and $\hat{\mathbb{P}}(i \leftrightarrow j))$ is the probability of connection between any dyad under the fitted SBM.
+  \mathbf{W} = \frac{(1 - \hat{\mathbb{P}}(i \leftrightarrow j)) }{1 - \mathrm{density}(\hat{\mathcal{G}})},
+\end{equation}
 
-The overall amount of sparsity is tuned by the argument `penalty`, and the number of block in the SBM is fixed by argument `n_blocks`
+where $\hat{\mathcal{G}}$ is the current estimate of the network and $\hat{\mathbb{P}}(i \leftrightarrow j))$ is the estimated probability of connection between any dyad under the fitted SBM (that is, conditional on the block of the nodes).
+
+The overall amount of sparsity is tuned by the argument `penalty`, and the number of blocks in the SBM is fixed by argument `n_blocks`
 
 ```{r janine}
 out <- janine(X, penalty = 0.075, n_blocks = nbBlock)
