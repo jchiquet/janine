@@ -53,7 +53,7 @@ Sigma <- solve(Omega)
 We can finally sample some multivariate Gaussian data.
 
 ```{r mv data}
-n <- 1000
+n <- 300
 means <- rep(0, ncol(Sigma))
 X <- rmgaussian(n, means, Sigma)
 ```
@@ -71,7 +71,7 @@ where $\hat{\mathcal{G}}$ is the current estimate of the network and $\hat{\math
 The overall amount of sparsity is tuned by the argument `penalty`, and the number of blocks in the SBM is fixed by argument `n_blocks`
 
 ```{r janine}
-out <- janine(X, penalty = 0.075, n_blocks = nbBlock)
+out <- janine(X, n_blocks = nbBlock, penalties = 0.1)
 ```
 
 In this easy data setting, the method seems to work well, exhibiting a nice convergence of the objective function (the penalized negative log-likelihood):

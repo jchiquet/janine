@@ -6,24 +6,28 @@
 \usage{
 janine(
   data,
-  penalty,
   n_blocks,
-  epsilon = 0.001,
-  max_iter = 20,
-  penalize_diagonal = TRUE
+  penalties = NULL,
+  control_optim = list(epsilon = 1e-04, max_iter = 20, trace = 1),
+  control_penalties = list(min_ration = 0.1, length = 25, diagonal = FALSE)
 )
 }
 \arguments{
 \item{data}{a n x d matrix of multivariate Gaussian observation}
 
-\item{penalty}{postive real tuning the network sparsity}
-
 \item{n_blocks}{integer for the targetnumber of groups}
 
-\item{epsilon}{convergence threshold, defaulkt to 1e-3}
+\item{penalties}{a vector of postive real number in decreasing order tuning the network sparsity. The default (NULL) generates
+an hopefully appropriate collection of penalties.}
 
-\item{max_iter}{integer for the maximal number of iteration. Default to 20}
+\item{control_optim}{a list controling how the alternate optimization between adaptive graphical-Lasso and SBM is conducted
+for each penalty level. Contains three entries: a convergence threshold \code{epsilon} (default to 1e-3),
+a maximal number of iteration \code{max_iter} (default 20) and verbosity level \code{trace} (default 1).}
+
+\item{control_penalties}{a list controling how \code{penalties} is generated, with three entries:
+a double \code{min_ratio} (default 0.1), a integer \code{length} (default 25) and a logical \code{diagonal} (default FALSE)
+indicating weither the diaognal should be penalized or not.}
 }
 \description{
-Iterate Adpative Graphical-Lasso with binary SBM estimation to recover the adaptive weights
+Iterate Adaptive Graphical-Lasso with binary SBM estimation to recover the adaptive weights
 }
