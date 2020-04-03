@@ -21,7 +21,6 @@ knitr::opts_chunk$set(
 library(janine)   
 library(rggm)     # GGM data generation
 library(corrplot) # fancy graphical output
-library(ggplot2)  # 
 ```
 
 ## Generating Gaussian data from a Graphical Model with SBM structure
@@ -88,7 +87,7 @@ abline(v = out$criteria$penalty[which.max(out$criteria$EBIC)])
 The estimation is visually good too
 
 ```{r}
-model <- out$models[[which.max(out$criteria$BIC)]]
+model <- out$models[[which.max(out$criteria$EBIC)]]
 ```
 
 

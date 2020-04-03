@@ -12,14 +12,16 @@
 #' @param control_optim a list controling how the alternate optimization between adaptive graphical-Lasso and SBM is conducted
 #' for each penalty level. Contains three entries: a convergence threshold \code{epsilon} (default to 1e-3),
 #' a maximal number of iteration \code{max_iter} (default 20) and verbosity level \code{trace} (default 1).
+#' @importFrom stats cov
+#' @importFrom utils flush.console tail
 #' @export
 janine <- function(data, n_blocks, penalties = NULL,
                    control_optim = list(epsilon = 1e-4, max_iter = 20, trace = 1),
-                   control_penalties = list(min_ratio = 0.1, length = 20, diagonal = FALSE)
+                   control_penalties = list(min_ratio = 0.1, length = 20, diagonal = TRUE)
                    ) {
 
   n <- nrow(data)
-  d <- ncol(X)
+  d <- ncol(data)
   S <- cov(as.matrix(data))
 
   ## this function willl be the method of a janine_fit object
