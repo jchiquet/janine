@@ -15,7 +15,7 @@
 #' @export
 janine <- function(data, n_blocks, penalties = NULL,
                    control_optim = list(epsilon = 1e-4, max_iter = 20, trace = 1),
-                   control_penalties = list(min_ration = 0.1, length = 25, diagonal = FALSE)
+                   control_penalties = list(min_ratio = 0.1, length = 20, diagonal = FALSE)
                    ) {
 
   n <- nrow(data)
@@ -42,34 +42,54 @@ janine <- function(data, n_blocks, penalties = NULL,
       sparsity <- 1 - sum(net$support) / (d**2)
 
       ## E step (latent block estimation)
-      sbm <- estimate_block(net$support, n_blocks)
-      weights <- (1 - sbm$connectProb)/sparsity
-      if (!control_penalties$diagonal) diag(weights) <- 0
+      if (sparsity < 1) {
+        sbm <- estimate_block(net$support, n_blocks)
+        weights <- (1 - sbm$connectProb)/sparsity
+        if (!control_penalties$diagonal) diag(weights) <- 0
+      } else {
+        sbm <- NA
+      }
 
       ## Convergence assesment
-      logdet <- determinant(net$Omega, logarithm = TRUE)$modulus
-      objective[iter + 1] <- - (n/2) * (logdet - sum( diag( S %*% net$Omega )) ) + penalty * sum(abs(weights * net$Omega))
+      loglik <- (n/2) * (determinant(net$Omega, logarithm = TRUE)$modulus - sum( diag( S %*% net$Omega )) )
+      objective[iter + 1] <- - loglik + penalty * sum(abs(weights * net$Omega))
       cond <- abs(objective[iter + 1] - objective[iter])/abs(objective[iter + 1]) < control_optim$epsilon | iter + 1 > control_optim$max_iter
       iter <- iter + 1
     }
 
-    list(network = net, membership = sbm, weights = weights, objective = objective[1:(iter - 1)])
-  }
+    n_edges <- sum(net$support)/2
+    BIC   <- loglik - .5 * log(n) * n_edges
+    EBIC  <- BIC - .5 * ifelse(n_edges > 0, n_edges * log(.5 * d*(d - 1)/n_edges), 0)
 
+    structure(
+      list(network = net, membership = sbm, weights = weights,
+         objective = objective[1:(iter - 1)], loglik = loglik, BIC = BIC, EBIC = EBIC), class = "janine_fit")
+  }
 
   ## default vector of penalties
   if (is.null(penalties)) {
-    max_pen   <- max(abs(S))
-    penalties <- 10^seq(from = log10( max(abs(S)) ),
-                        to   = log10( max(abs(S))*control_penalties$min_ratio ),
+    max_pen   <- max(abs(S[upper.tri(S, diag = control_penalties$diagonal)]))
+    penalties <- 10^seq(from = log10( max_pen ),
+                        to   = log10( max_pen*control_penalties$min_ratio ),
                         len  = control_penalties$length)
   }
 
+  if (control_optim$trace > 0) cat("\n Adjusting", length(penalties), "SBM-structured GGM with sparse adaptive regularisation \n")
+
   ## call to optim
-  res <- lapply(penalties, optim_janine)
+  models <- lapply(penalties, optim_janine)
 
-  ## send back the results as a list if several penalties, a single fit other
-  if (length(res) == 1) res <- res[[1]]
-  res
+  # formatting output
+  criteria <- data.frame(
+    penalty   = penalties,
+    sparsity  = sapply(models, function(model) 1 - sum(model$net$support) / (d**2)),
+    n_edges   = sapply(models, function(model) sum(model$net$support)/2),
+    loglik    = sapply(models, function(model) sum(model$loglik)),
+    objective = sapply(models, function(model) tail(model$objective, 1)),
+    BIC       = sapply(models, function(model) sum(model$BIC)),
+    EBIC      = sapply(models, function(model) sum(model$EBIC))
+  )
 
+  structure(list(models = models, criteria = criteria), class = "janine_collection")
 }
+

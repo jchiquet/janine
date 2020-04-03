@@ -21,6 +21,7 @@ knitr::opts_chunk$set(
 library(janine)   
 library(rggm)     # GGM data generation
 library(corrplot) # fancy graphical output
+library(ggplot2)  # 
 ```
 
 ## Generating Gaussian data from a Graphical Model with SBM structure
@@ -53,7 +54,7 @@ Sigma <- solve(Omega)
 We can finally sample some multivariate Gaussian data.
 
 ```{r mv data}
-n <- 300
+n <- 500
 means <- rep(0, ncol(Sigma))
 X <- rmgaussian(n, means, Sigma)
 ```
@@ -68,30 +69,37 @@ X <- rmgaussian(n, means, Sigma)
 
 where $\hat{\mathcal{G}}$ is the current estimate of the network and $\hat{\mathbb{P}}(i \leftrightarrow j)$ is the estimated probability of connection between any dyad under the fitted SBM (that is, conditional on the block of the nodes).
 
-The overall amount of sparsity is tuned by the argument `penalty`, and the number of blocks in the SBM is fixed by argument `n_blocks`
+The overall amount of sparsity is tuned by the argument `penalties`, and the number of blocks in the SBM is fixed by argument `n_blocks`. By default, janine is fitted on a vector of penalties automaticcaly generated.
 
 ```{r janine}
-out <- janine(X, n_blocks = nbBlock, penalties = 0.1)
+out <- janine(X, n_blocks = nbBlock)
 ```
 
-In this easy data setting, the method seems to work well, exhibiting a nice convergence of the objective function (the penalized negative log-likelihood):
+In this setting, the criteria looks good but probably need to be adapted cause they choose a too sparse model
 
 ```{r objective plot}
-plot(out$objective, type = "b", xlab = 'iteration', ylab = 'objective')
+plot(out$criteria$penalty, out$criteria$loglik, type = "b", xlab = 'iteration', ylab = 'criteria', log = "x")
+lines(out$criteria$penalty, out$criteria$BIC, col = "red")
+lines(out$criteria$penalty, out$criteria$EBIC, col = "blue")
+legend('topright', bty = "n", c("loglikelihood", "BIC", "EBIC"), col = c("black", "red", "blue"), lty = c(1,1,1))
+abline(v = out$criteria$penalty[which.max(out$criteria$EBIC)])
 ```
 
 The estimation is visually good too
+
+```{r}
+model <- out$models[[which.max(out$criteria$BIC)]]
+```
+
 
 ```{r plot estiamtor}
 par(mfrow = c(2,2))
 corrplot(as.matrix(Omega), is.corr = FALSE, tl.pos = "n", method = 'color', type = "upper", diag = FALSE, title = "TRUE precision")
 corrplot(as.matrix(Sigma), is.corr = FALSE, tl.pos = "n", method = 'color', type = "upper", diag = FALSE, title = "TRUE variance")
-corrplot(out$net$Omega, is.corr = FALSE, tl.pos = "n", method = 'color', type = "upper", diag = FALSE, title = "Estimated precision")
-corrplot(out$net$Sigma, is.corr = FALSE, tl.pos = "n", method = 'color', type = "upper", diag = FALSE, title = "Estimated variance")
+corrplot(model$net$Omega, is.corr = FALSE, tl.pos = "n", method = 'color', type = "upper", diag = FALSE, title = "Estimated precision")
+corrplot(model$net$Sigma, is.corr = FALSE, tl.pos = "n", method = 'color', type = "upper", diag = FALSE, title = "Estimated variance")
 ```
 
 ## TODO
-
-  - EBIC and ICL to choose the number of block and the level of penalty
   - Multipartite
 

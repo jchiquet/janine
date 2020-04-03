@@ -16,6 +16,7 @@ Imports:
     igraph,
     blockmodels,
     glassoFast,
+    methods,
     magrittr
 Suggests: 
     corrplot,

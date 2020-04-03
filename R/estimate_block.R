@@ -9,13 +9,15 @@
 #' @export
 estimate_block <- function(adj_matrix, n_blocks){
 
-  SBM_fits <- BM_bernoulli("SBM", adj_matrix, verbosity = 0, plotting="", explore_min = n_blocks)
-  SBM_fits$estimate()
+  stopifnot(sum(adj_matrix) != 0)
 
-  list(
+  SBM_fits <- BM_bernoulli("SBM", adj_matrix, verbosity = 0, plotting="", explore_min = n_blocks)
+  { sink("/dev/null"); SBM_fits$estimate() ; sink() }
+
+  res <- list(
     blockProb   = SBM_fits$memberships[[n_blocks]]$Z,
     connectProb = SBM_fits$prediction(n_blocks),
-    membership  = apply(SBM_fits$memberships[[n_blocks]]$Z, 1, which.max),
+    membership  = factor(apply(SBM_fits$memberships[[n_blocks]]$Z, 1, which.max), levels = 1:n_blocks),
     parameters  = SBM_fits$model_parameters[[n_blocks]]
   )
 }
