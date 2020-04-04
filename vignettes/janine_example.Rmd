@@ -71,7 +71,9 @@ where $\hat{\mathcal{G}}$ is the current estimate of the network and $\hat{\math
 The overall amount of sparsity is tuned by the argument `penalties`, and the number of blocks in the SBM is fixed by argument `n_blocks`. By default, janine is fitted on a vector of penalties automaticcaly generated.
 
 ```{r janine}
-out <- janine(X, n_blocks = nbBlock)
+out <- janine(X, n_blocks = nbBlock,
+              control_optim = list(epsilon = 1e-4, max_iter = 20, trace = 1, n_cores = 1),
+              control_penalties = list(min_ratio = 0.075, length = 20, diagonal = TRUE))
 ```
 
 In this setting, the criteria looks good but probably need to be adapted cause they choose a too sparse model
@@ -84,19 +86,22 @@ legend('topright', bty = "n", c("loglikelihood", "BIC", "EBIC"), col = c("black"
 abline(v = out$criteria$penalty[which.max(out$criteria$EBIC)])
 ```
 
-The estimation is visually good too
+The estimation is visually good too if we consider the more dense model, so we need to think a bit more about the model selection issue.
 
 ```{r}
-model <- out$models[[which.max(out$criteria$EBIC)]]
+model_EBIC  <- out$models[[which.max(out$criteria$EBIC)]]
+model_dense <- out$models[[length(out$models)]]
 ```
 
 
 ```{r plot estiamtor}
-par(mfrow = c(2,2))
+par(mfrow = c(3,2))
 corrplot(as.matrix(Omega), is.corr = FALSE, tl.pos = "n", method = 'color', type = "upper", diag = FALSE, title = "TRUE precision")
 corrplot(as.matrix(Sigma), is.corr = FALSE, tl.pos = "n", method = 'color', type = "upper", diag = FALSE, title = "TRUE variance")
-corrplot(model$net$Omega, is.corr = FALSE, tl.pos = "n", method = 'color', type = "upper", diag = FALSE, title = "Estimated precision")
-corrplot(model$net$Sigma, is.corr = FALSE, tl.pos = "n", method = 'color', type = "upper", diag = FALSE, title = "Estimated variance")
+corrplot(model_EBIC$net$Omega, is.corr = FALSE, tl.pos = "n", method = 'color', type = "upper", diag = FALSE, title = "Estimated precision")
+corrplot(model_EBIC$net$Sigma, is.corr = FALSE, tl.pos = "n", method = 'color', type = "upper", diag = FALSE, title = "Estimated variance")
+corrplot(model_dense$net$Omega, is.corr = FALSE, tl.pos = "n", method = 'color', type = "upper", diag = FALSE, title = "Estimated precision")
+corrplot(model_dense$net$Sigma, is.corr = FALSE, tl.pos = "n", method = 'color', type = "upper", diag = FALSE, title = "Estimated variance")
 ```
 
 ## TODO

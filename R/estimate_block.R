@@ -7,11 +7,11 @@
 #' @param n_blocks  integer, the number of blocks
 #' @import blockmodels
 #' @export
-estimate_block <- function(adj_matrix, n_blocks){
+estimate_block <- function(adj_matrix, n_blocks, n_cores){
 
   stopifnot(sum(adj_matrix) != 0)
 
-  SBM_fits <- BM_bernoulli("SBM", adj_matrix, verbosity = 0, plotting="", explore_min = n_blocks)
+  SBM_fits <- BM_bernoulli("SBM", adj_matrix, verbosity = 0, plotting="", explore_min = n_blocks, ncores = n_cores)
   { sink("/dev/null"); SBM_fits$estimate() ; sink() }
 
   res <- list(

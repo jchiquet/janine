@@ -16,7 +16,7 @@
 #' @importFrom utils flush.console tail
 #' @export
 janine <- function(data, n_blocks, penalties = NULL,
-                   control_optim = list(epsilon = 1e-4, max_iter = 20, trace = 1),
+                   control_optim = list(epsilon = 1e-4, max_iter = 20, trace = 1, n_cores = 4),
                    control_penalties = list(min_ratio = 0.1, length = 20, diagonal = TRUE)
                    ) {
 
@@ -45,7 +45,7 @@ janine <- function(data, n_blocks, penalties = NULL,
 
       ## E step (latent block estimation)
       if (sparsity < 1) {
-        sbm <- estimate_block(net$support, n_blocks)
+        sbm <- estimate_block(net$support, n_blocks, control_optim$n_cores)
         weights <- (1 - sbm$connectProb)/sparsity
         if (!control_penalties$diagonal) diag(weights) <- 0
       } else {

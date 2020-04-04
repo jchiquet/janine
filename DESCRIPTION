@@ -5,7 +5,8 @@ Authors@R:
     person(given = "Julien",
            family = "Chiquet",
            role = c("aut", "cre"),
-           email = "julien.chiquet@inrae.fr")
+           email = "julien.chiquet@inrae.fr",
+           comment = c(ORCID = "0000-0002-3629-3429"))
 Description: What the package does (one paragraph).
 License: GPL-3
 Encoding: UTF-8

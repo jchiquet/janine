@@ -8,8 +8,8 @@ janine(
   data,
   n_blocks,
   penalties = NULL,
-  control_optim = list(epsilon = 1e-04, max_iter = 20, trace = 1),
-  control_penalties = list(min_ratio = 0.1, length = 20, diagonal = FALSE)
+  control_optim = list(epsilon = 1e-04, max_iter = 20, trace = 1, n_cores = 4),
+  control_penalties = list(min_ratio = 0.1, length = 20, diagonal = TRUE)
 )
 }
 \arguments{

@@ -4,7 +4,7 @@
 \alias{estimate_block}
 \title{Estimation of the latent block organisation of the network}
 \usage{
-estimate_block(adj_matrix, n_blocks)
+estimate_block(adj_matrix, n_blocks, n_cores)
 }
 \arguments{
 \item{adj_matrix}{a symmetric weighted adjacency matrix}
