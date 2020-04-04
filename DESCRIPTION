@@ -19,8 +19,10 @@ Imports:
     glassoFast,
     methods,
     magrittr
+Remotes: jchiquet/rggm
 Suggests: 
     corrplot,
     knitr,
+    rggm,
     rmarkdown
 VignetteBuilder: knitr
