@@ -78,7 +78,7 @@ out <- janine(X, n_blocks = nbBlock,
 
 In this setting, the criteria looks good but probably need to be adapted cause they choose a too sparse model
 
-```{r objective plot}
+```{r criteria_plot}
 plot(out$criteria$penalty, out$criteria$loglik, type = "b", xlab = 'iteration', ylab = 'criteria', log = "x")
 lines(out$criteria$penalty, out$criteria$BIC, col = "red")
 lines(out$criteria$penalty, out$criteria$EBIC, col = "blue")
@@ -94,7 +94,7 @@ model_dense <- out$models[[length(out$models)]]
 ```
 
 
-```{r plot estiamtor}
+```{r plot_estimators}
 par(mfrow = c(3,2))
 corrplot(as.matrix(Omega), is.corr = FALSE, tl.pos = "n", method = 'color', type = "upper", diag = FALSE, title = "TRUE precision")
 corrplot(as.matrix(Sigma), is.corr = FALSE, tl.pos = "n", method = 'color', type = "upper", diag = FALSE, title = "TRUE variance")
