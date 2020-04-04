@@ -5,6 +5,7 @@
 #'
 #' @param adj_matrix a symmetric weighted adjacency matrix
 #' @param n_blocks  integer, the number of blocks
+#' @param n_cores  integer, the number of cores used for initializing the SBM exploration
 #' @import blockmodels
 #' @export
 estimate_block <- function(adj_matrix, n_blocks, n_cores){
@@ -16,7 +17,7 @@ estimate_block <- function(adj_matrix, n_blocks, n_cores){
 
   res <- list(
     blockProb   = SBM_fits$memberships[[n_blocks]]$Z,
-    connectProb = SBM_fits$prediction(n_blocks),
+    connectProb = (SBM_fits$prediction(n_blocks) + t(SBM_fits$prediction(n_blocks)))/2,
     membership  = factor(apply(SBM_fits$memberships[[n_blocks]]$Z, 1, which.max), levels = 1:n_blocks),
     parameters  = SBM_fits$model_parameters[[n_blocks]]
   )

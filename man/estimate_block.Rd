@@ -10,6 +10,8 @@ estimate_block(adj_matrix, n_blocks, n_cores)
 \item{adj_matrix}{a symmetric weighted adjacency matrix}
 
 \item{n_blocks}{integer, the number of blocks}
+
+\item{n_cores}{integer, the number of cores used for initializing the SBM exploration}
 }
 \description{
 The underlying network is assumed to be drawn from a Stochastic Bloc Model.
