@@ -137,7 +137,7 @@ This function uses a variational EM algorithm implemented in the package blockmo
 This function uses a variational EM algorithm implemented in the package blockmodels to estimate such a model.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>estimate_block</span>(<span class='no'>adj_matrix</span>, <span class='no'>n_blocks</span>)</pre>
+    <pre class="usage"><span class='fu'>estimate_block</span>(<span class='no'>adj_matrix</span>, <span class='no'>n_blocks</span>, <span class='no'>n_cores</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -149,6 +149,10 @@ This function uses a variational EM algorithm implemented in the package blockmo
     <tr>
       <th>n_blocks</th>
       <td><p>integer, the number of blocks</p></td>
+    </tr>
+    <tr>
+      <th>n_cores</th>
+      <td><p>integer, the number of cores used for initializing the SBM exploration</p></td>
     </tr>
     </table>
 
