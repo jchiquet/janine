@@ -14,48 +14,61 @@
 #' a maximal number of iteration \code{max_iter} (default 20) and verbosity level \code{trace} (default 1).
 #' @importFrom stats cov
 #' @importFrom utils flush.console tail
+#' @importFrom igraph laplacian_matrix graph_from_adjacency_matrix
 #' @export
-janine <- function(data, n_blocks, penalties = NULL,
+janine <- function(data, n_blocks, penalties = NULL, alpha = 0,
                    control_optim = list(epsilon = 1e-4, max_iter = 20, trace = 1, n_cores = 4),
-                   control_penalties = list(min_ratio = 0.1, length = 20, diagonal = TRUE)
+                   control_penalties = list(min_ratio = 0.1, length = 20, diagonal = TRUE, weighted = TRUE)
                    ) {
 
+  ## Initialization
   n <- nrow(data)
   d <- ncol(data)
   S <- cov(as.matrix(data))
 
+  ctrl_optim <- list(epsilon = 1e-4, max_iter = 20, trace = 1, n_cores = 4)
+  ctrl_optim[names(control_optim)] <- control_optim
+  ctrl_penalties <- list(min_ratio = 0.1, length = 20, diagonal = TRUE, weighted = TRUE)
+  ctrl_penalties[names(control_penalties)] <- control_penalties
+
   ## this function willl be the method of a janine_fit object
   optim_janine <- function(penalty) {
 
-    if (control_optim$trace == 1) {
+    if (ctrl_optim$trace == 1) {
       cat("\tsparsifying penalty =", penalty, "\r")
       flush.console()
     }
 
     weights <- matrix(1, d, d)
-    if (!control_penalties$diagonal) diag(weights) <- 0
+    if (!ctrl_penalties$diagonal) diag(weights) <- 0
+    Laplacian <- matrix(0, d, d)
     cond <- FALSE
     iter <- 1
-    objective <- numeric(control_optim$max_iter)
+    objective <- numeric(ctrl_optim$max_iter)
     objective[iter] <- Inf
     while(!cond) {
       ## M step (network structure estimation)
-      net <- estimate_network(S, penalty, weights)
+      net <- estimate_network(S + penalty * alpha * Laplacian, penalty, weights)
       sparsity <- 1 - sum(net$support) / (d**2)
 
       ## E step (latent block estimation)
       if (sparsity < 1) {
-        sbm <- estimate_block(net$support, n_blocks, control_optim$n_cores)
-        weights <- (1 - sbm$connectProb)/sparsity
-        if (!control_penalties$diagonal) diag(weights) <- 0
+        sbm <- estimate_block(net$support, n_blocks, ctrl_optim$n_cores)
+        if (ctrl_penalties$weighted) {
+          weights <- (1 - sbm$connectProb)/sparsity
+          if (!ctrl_penalties$diagonal) diag(weights) <- 0
+        }
+        Laplacian <-
+          igraph::graph_from_adjacency_matrix(sbm$connectProb, weighted = TRUE, diag = FALSE, mode = "undirected") %>%
+          igraph::laplacian_matrix(sparse = FALSE)
       } else {
         sbm <- NA
       }
 
       ## Convergence assesment
       loglik <- (n/2) * (determinant(net$Omega, logarithm = TRUE)$modulus - sum( diag( S %*% net$Omega )) )
-      objective[iter + 1] <- - loglik + penalty * sum(abs(weights * net$Omega))
-      cond <- abs(objective[iter + 1] - objective[iter])/abs(objective[iter + 1]) < control_optim$epsilon | iter + 1 > control_optim$max_iter
+      objective[iter + 1] <- - loglik + penalty * ( (1-alpha) * sum(abs(weights * net$Omega)) + .5 * n * alpha * sum( diag (Laplacian %*% net$Omega) ))
+      cond <- abs(objective[iter + 1] - objective[iter])/abs(objective[iter + 1]) < ctrl_optim$epsilon | iter + 1 > ctrl_optim$max_iter
       iter <- iter + 1
     }
 
@@ -70,13 +83,13 @@ janine <- function(data, n_blocks, penalties = NULL,
 
   ## default vector of penalties
   if (is.null(penalties)) {
-    max_pen   <- max(abs(S[upper.tri(S, diag = control_penalties$diagonal)]))
+    max_pen   <- max(abs(S[upper.tri(S, diag = ctrl_penalties$diagonal)]))
     penalties <- 10^seq(from = log10( max_pen ),
-                        to   = log10( max_pen*control_penalties$min_ratio ),
-                        len  = control_penalties$length)
+                        to   = log10( max_pen*ctrl_penalties$min_ratio ),
+                        len  = ctrl_penalties$length)
   }
 
-  if (control_optim$trace > 0) cat("\n Adjusting", length(penalties), "SBM-structured GGM with sparse adaptive regularisation \n")
+  if (ctrl_optim$trace > 0) cat("\n Adjusting", length(penalties), "SBM-structured GGM with sparse adaptive regularisation \n")
 
   ## call to optim
   models <- lapply(penalties, optim_janine)

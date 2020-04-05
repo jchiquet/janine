@@ -71,9 +71,9 @@ where $\hat{\mathcal{G}}$ is the current estimate of the network and $\hat{\math
 The overall amount of sparsity is tuned by the argument `penalties`, and the number of blocks in the SBM is fixed by argument `n_blocks`. By default, janine is fitted on a vector of penalties automaticcaly generated.
 
 ```{r janine}
-out <- janine(X, n_blocks = nbBlock,
+out <- janine(X, n_blocks = nbBlock, # alpha = 0.25,
               control_optim = list(n_cores = 1),
-              control_penalties = list(min_ratio = 0.05))
+              control_penalties = list(min_ratio = 0.075))
 ```
 
 In this setting, the criteria looks good but probably need to be adapted cause they choose a too sparse model
@@ -82,7 +82,8 @@ In this setting, the criteria looks good but probably need to be adapted cause t
 plot(out$criteria$penalty, out$criteria$loglik, type = "b", xlab = 'iteration', ylab = 'criteria', log = "x")
 lines(out$criteria$penalty, out$criteria$BIC, col = "red")
 lines(out$criteria$penalty, out$criteria$EBIC, col = "blue")
-legend('topright', bty = "n", c("loglikelihood", "BIC", "EBIC"), col = c("black", "red", "blue"), lty = c(1,1,1))
+lines(out$criteria$penalty, out$criteria$objective, col = "green")
+legend('topright', bty = "n", c("loglikelihood", "BIC", "EBIC", "pen-loglike"), col = c("black", "red", "blue", "green"), lty = c(1,1,1,1))
 abline(v = out$criteria$penalty[which.max(out$criteria$EBIC)])
 ```
 
