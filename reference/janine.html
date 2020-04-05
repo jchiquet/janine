@@ -139,8 +139,10 @@
   <span class='no'>data</span>,
   <span class='no'>n_blocks</span>,
   <span class='kw'>penalties</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>alpha</span> <span class='kw'>=</span> <span class='fl'>0</span>,
   <span class='kw'>control_optim</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='kw'>epsilon</span> <span class='kw'>=</span> <span class='fl'>1e-04</span>, <span class='kw'>max_iter</span> <span class='kw'>=</span> <span class='fl'>20</span>, <span class='kw'>trace</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>n_cores</span> <span class='kw'>=</span> <span class='fl'>4</span>),
-  <span class='kw'>control_penalties</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='kw'>min_ratio</span> <span class='kw'>=</span> <span class='fl'>0.1</span>, <span class='kw'>length</span> <span class='kw'>=</span> <span class='fl'>20</span>, <span class='kw'>diagonal</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)
+  <span class='kw'>control_penalties</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='kw'>min_ratio</span> <span class='kw'>=</span> <span class='fl'>0.1</span>, <span class='kw'>length</span> <span class='kw'>=</span> <span class='fl'>20</span>, <span class='kw'>diagonal</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>weighted</span> <span class='kw'>=</span>
+    <span class='fl'>TRUE</span>)
 )</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -158,6 +160,10 @@
       <th>penalties</th>
       <td><p>a vector of postive real number in decreasing order tuning the network sparsity. The default (NULL) generates
 an hopefully appropriate collection of penalties.</p></td>
+    </tr>
+    <tr>
+      <th>alpha</th>
+      <td><p>a positive scalar tuning the mixture between the weighted-sparse penlaty and the trace-Laplacian regularisation.</p></td>
     </tr>
     <tr>
       <th>control_optim</th>
