@@ -72,8 +72,8 @@ The overall amount of sparsity is tuned by the argument `penalties`, and the num
 
 ```{r janine}
 out <- janine(X, n_blocks = nbBlock,
-              control_optim = list(epsilon = 1e-4, max_iter = 20, trace = 1, n_cores = 1),
-              control_penalties = list(min_ratio = 0.075, length = 20, diagonal = TRUE))
+              control_optim = list(n_cores = 1),
+              control_penalties = list(min_ratio = 0.05))
 ```
 
 In this setting, the criteria looks good but probably need to be adapted cause they choose a too sparse model
