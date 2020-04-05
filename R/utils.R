@@ -9,3 +9,5 @@
 #' @importFrom magrittr %>%
 #' @usage lhs \%>\% rhs
 NULL
+
+trace <- function(A, B) { sum ( diag( A %*% B ) ) }

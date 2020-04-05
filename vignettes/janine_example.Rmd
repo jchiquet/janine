@@ -71,26 +71,25 @@ where $\hat{\mathcal{G}}$ is the current estimate of the network and $\hat{\math
 The overall amount of sparsity is tuned by the argument `penalties`, and the number of blocks in the SBM is fixed by argument `n_blocks`. By default, janine is fitted on a vector of penalties automaticcaly generated.
 
 ```{r janine}
-out <- janine(X, n_blocks = nbBlock, # alpha = 0.25,
+out <- janine(X, n_blocks = nbBlock, # alpha = 0.1,
               control_optim = list(n_cores = 1),
-              control_penalties = list(min_ratio = 0.075))
+              control_penalties = list(min_ratio = 0.05))
 ```
 
 In this setting, the criteria looks good but probably need to be adapted cause they choose a too sparse model
 
 ```{r criteria_plot}
-plot(out$criteria$penalty, out$criteria$loglik, type = "b", xlab = 'iteration', ylab = 'criteria', log = "x")
+plot(out$criteria$penalty, -2*out$criteria$loglik, type = "b", xlab = 'iteration', ylab = 'criteria', log = "x")
 lines(out$criteria$penalty, out$criteria$BIC, col = "red")
 lines(out$criteria$penalty, out$criteria$EBIC, col = "blue")
-lines(out$criteria$penalty, out$criteria$objective, col = "green")
-legend('topright', bty = "n", c("loglikelihood", "BIC", "EBIC", "pen-loglike"), col = c("black", "red", "blue", "green"), lty = c(1,1,1,1))
-abline(v = out$criteria$penalty[which.max(out$criteria$EBIC)])
+legend('bottomright', bty = "n", c("-2Loglik", "BIC", "EBIC"), col = c("black", "red", "blue"), lty = c(1,1,1))
+abline(v = c(out$criteria$penalty[which.min(out$criteria$EBIC)],out$criteria$penalty[which.min(out$criteria$BIC)]), lty = "dotted")
 ```
 
 The estimation is visually good too if we consider the more dense model, so we need to think a bit more about the model selection issue.
 
-```{r}
-model_EBIC  <- out$models[[which.max(out$criteria$EBIC)]]
+```{r model selection}
+model_EBIC  <- out$models[[which.min(out$criteria$BIC)]]
 model_dense <- out$models[[length(out$models)]]
 ```
 

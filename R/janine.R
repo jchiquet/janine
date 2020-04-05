@@ -33,10 +33,10 @@ janine <- function(data, n_blocks, penalties = NULL, alpha = 0,
   ctrl_penalties[names(control_penalties)] <- control_penalties
 
   ## this function willl be the method of a janine_fit object
-  optim_janine <- function(penalty) {
+  optim_janine <- function(lambda) {
 
     if (ctrl_optim$trace == 1) {
-      cat("\tsparsifying penalty =", penalty, "\r")
+      cat("\tAmount of regularisation =", lambda, "\r")
       flush.console()
     }
 
@@ -49,7 +49,7 @@ janine <- function(data, n_blocks, penalties = NULL, alpha = 0,
     objective[iter] <- Inf
     while(!cond) {
       ## M step (network structure estimation)
-      net <- estimate_network(S + penalty * alpha * Laplacian, penalty, weights)
+      net <- estimate_network(S + lambda * alpha * Laplacian, lambda * (1-alpha), weights)
       sparsity <- 1 - sum(net$support) / (d**2)
 
       ## E step (latent block estimation)
@@ -59,23 +59,25 @@ janine <- function(data, n_blocks, penalties = NULL, alpha = 0,
           weights <- (1 - sbm$connectProb)/sparsity
           if (!ctrl_penalties$diagonal) diag(weights) <- 0
         }
-        Laplacian <-
-          igraph::graph_from_adjacency_matrix(sbm$connectProb, weighted = TRUE, diag = FALSE, mode = "undirected") %>%
-          igraph::laplacian_matrix(sparse = FALSE)
+        Laplacian <- sbm$connectProb %>%
+          graph_from_adjacency_matrix(weighted = TRUE, diag = FALSE, mode = "undirected") %>%
+          laplacian_matrix(sparse = FALSE)
       } else {
         sbm <- NA
       }
 
       ## Convergence assesment
-      loglik <- (n/2) * (determinant(net$Omega, logarithm = TRUE)$modulus - sum( diag( S %*% net$Omega )) )
-      objective[iter + 1] <- - loglik + penalty * ( (1-alpha) * sum(abs(weights * net$Omega)) + .5 * n * alpha * sum( diag (Laplacian %*% net$Omega) ))
+      loglik <- (n/2) * (determinant(net$Omega, logarithm = TRUE)$modulus - trace(S, net$Omega))
+      sparse_reg <- sum(abs(weights * net$Omega))
+      graph_reg  <- trace(Laplacian,  net$Omega)
+      objective[iter + 1] <- - (2/n) * loglik + lambda * ( (1-alpha) * sparse_reg + alpha * graph_reg )
       cond <- abs(objective[iter + 1] - objective[iter])/abs(objective[iter + 1]) < ctrl_optim$epsilon | iter + 1 > ctrl_optim$max_iter
       iter <- iter + 1
     }
 
     n_edges <- sum(net$support)/2
-    BIC   <- loglik - .5 * log(n) * n_edges
-    EBIC  <- BIC - .5 * ifelse(n_edges > 0, n_edges * log(.5 * d*(d - 1)/n_edges), 0)
+    BIC   <- -2 * loglik + log(n) * n_edges
+    EBIC  <- BIC + ifelse(n_edges > 0, n_edges * log(.5 * d*(d - 1)/n_edges), 0)
 
     structure(
       list(network = net, membership = sbm, weights = weights,
