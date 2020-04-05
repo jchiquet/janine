@@ -130,36 +130,35 @@
 <p>The overall amount of sparsity is tuned by the argument <code>penalties</code>, and the number of blocks in the SBM is fixed by argument <code>n_blocks</code>. By default, janine is fitted on a vector of penalties automaticcaly generated.</p>
 <div class="sourceCode" id="cb6"><html><body><pre class="r">out  
 #&gt;  Adjusting 20 SBM-structured GGM with sparse adaptive regularisation 
-#&gt;  sparsifying penalty = 1.312959 
-    sparsifying penalty = 1.145629 
-    sparsifying penalty = 0.9996238 
-    sparsifying penalty = 0.8722265 
-    sparsifying penalty = 0.7610654 
-    sparsifying penalty = 0.6640712 
-    sparsifying penalty = 0.5794385 
-    sparsifying penalty = 0.5055918 
-    sparsifying penalty = 0.4411566 
-    sparsifying penalty = 0.3849333 
-    sparsifying penalty = 0.3358754 
-    sparsifying penalty = 0.2930697 
-    sparsifying penalty = 0.2557193 
-    sparsifying penalty = 0.2231291 
-    sparsifying penalty = 0.1946924 
-    sparsifying penalty = 0.1698798 
-    sparsifying penalty = 0.1482294 
-    sparsifying penalty = 0.1293383 
-    sparsifying penalty = 0.1128547 
-    sparsifying penalty = 0.09847193 </pre></body></html></div>
+#&gt;  Amount of regularisation = 1.396574 
+    Amount of regularisation = 1.192858 
+    Amount of regularisation = 1.018858 
+    Amount of regularisation = 0.8702383 
+    Amount of regularisation = 0.743298 
+    Amount of regularisation = 0.6348742 
+    Amount of regularisation = 0.5422661 
+    Amount of regularisation = 0.4631665 
+    Amount of regularisation = 0.3956051 
+    Amount of regularisation = 0.3378988 
+    Amount of regularisation = 0.28861 
+    Amount of regularisation = 0.2465109 
+    Amount of regularisation = 0.2105527 
+    Amount of regularisation = 0.1798397 
+    Amount of regularisation = 0.1536068 
+    Amount of regularisation = 0.1312004 
+    Amount of regularisation = 0.1120624 
+    Amount of regularisation = 0.095716 
+    Amount of regularisation = 0.08175405 
+    Amount of regularisation = 0.06982871 </pre></body></html></div>
 <p>In this setting, the criteria looks good but probably need to be adapted cause they choose a too sparse model</p>
-<div class="sourceCode" id="cb7"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.html">plot</a></span>(<span class="no">out</span>$<span class="no">criteria</span>$<span class="no">penalty</span>, <span class="no">out</span>$<span class="no">criteria</span>$<span class="no">loglik</span>, <span class="kw">type</span> <span class="kw">=</span> <span class="st">"b"</span>, <span class="kw">xlab</span> <span class="kw">=</span> <span class="st">'iteration'</span>, <span class="kw">ylab</span> <span class="kw">=</span> <span class="st">'criteria'</span>, <span class="kw">log</span> <span class="kw">=</span> <span class="st">"x"</span>)
+<div class="sourceCode" id="cb7"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.html">plot</a></span>(<span class="no">out</span>$<span class="no">criteria</span>$<span class="no">penalty</span>, -<span class="fl">2</span>*<span class="no">out</span>$<span class="no">criteria</span>$<span class="no">loglik</span>, <span class="kw">type</span> <span class="kw">=</span> <span class="st">"b"</span>, <span class="kw">xlab</span> <span class="kw">=</span> <span class="st">'iteration'</span>, <span class="kw">ylab</span> <span class="kw">=</span> <span class="st">'criteria'</span>, <span class="kw">log</span> <span class="kw">=</span> <span class="st">"x"</span>)
 <span class="fu"><a href="https://rdrr.io/r/graphics/lines.html">lines</a></span>(<span class="no">out</span>$<span class="no">criteria</span>$<span class="no">penalty</span>, <span class="no">out</span>$<span class="no">criteria</span>$<span class="no">BIC</span>, <span class="kw">col</span> <span class="kw">=</span> <span class="st">"red"</span>)
 <span class="fu"><a href="https://rdrr.io/r/graphics/lines.html">lines</a></span>(<span class="no">out</span>$<span class="no">criteria</span>$<span class="no">penalty</span>, <span class="no">out</span>$<span class="no">criteria</span>$<span class="no">EBIC</span>, <span class="kw">col</span> <span class="kw">=</span> <span class="st">"blue"</span>)
-<span class="fu"><a href="https://rdrr.io/r/graphics/lines.html">lines</a></span>(<span class="no">out</span>$<span class="no">criteria</span>$<span class="no">penalty</span>, <span class="no">out</span>$<span class="no">criteria</span>$<span class="no">objective</span>, <span class="kw">col</span> <span class="kw">=</span> <span class="st">"green"</span>)
-<span class="fu"><a href="https://rdrr.io/r/graphics/legend.html">legend</a></span>(<span class="st">'topright'</span>, <span class="kw">bty</span> <span class="kw">=</span> <span class="st">"n"</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"loglikelihood"</span>, <span class="st">"BIC"</span>, <span class="st">"EBIC"</span>, <span class="st">"pen-loglike"</span>), <span class="kw">col</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"black"</span>, <span class="st">"red"</span>, <span class="st">"blue"</span>, <span class="st">"green"</span>), <span class="kw">lty</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">1</span>,<span class="fl">1</span>,<span class="fl">1</span>,<span class="fl">1</span>))
-<span class="fu"><a href="https://rdrr.io/r/graphics/abline.html">abline</a></span>(<span class="kw">v</span> <span class="kw">=</span> <span class="no">out</span>$<span class="no">criteria</span>$<span class="no">penalty</span>[<span class="fu"><a href="https://rdrr.io/r/base/which.min.html">which.max</a></span>(<span class="no">out</span>$<span class="no">criteria</span>$<span class="no">EBIC</span>)])</pre></body></html></div>
+<span class="fu"><a href="https://rdrr.io/r/graphics/legend.html">legend</a></span>(<span class="st">'bottomright'</span>, <span class="kw">bty</span> <span class="kw">=</span> <span class="st">"n"</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"-2Loglik"</span>, <span class="st">"BIC"</span>, <span class="st">"EBIC"</span>), <span class="kw">col</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"black"</span>, <span class="st">"red"</span>, <span class="st">"blue"</span>), <span class="kw">lty</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">1</span>,<span class="fl">1</span>,<span class="fl">1</span>))
+<span class="fu"><a href="https://rdrr.io/r/graphics/abline.html">abline</a></span>(<span class="kw">v</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="no">out</span>$<span class="no">criteria</span>$<span class="no">penalty</span>[<span class="fu"><a href="https://rdrr.io/r/base/which.min.html">which.min</a></span>(<span class="no">out</span>$<span class="no">criteria</span>$<span class="no">EBIC</span>)],<span class="no">out</span>$<span class="no">criteria</span>$<span class="no">penalty</span>[<span class="fu"><a href="https://rdrr.io/r/base/which.min.html">which.min</a></span>(<span class="no">out</span>$<span class="no">criteria</span>$<span class="no">BIC</span>)]), <span class="kw">lty</span> <span class="kw">=</span> <span class="st">"dotted"</span>)</pre></body></html></div>
 <p><img src="janine_example_files/figure-html/criteria_plot-1.png" width="700"></p>
 <p>The estimation is visually good too if we consider the more dense model, so we need to think a bit more about the model selection issue.</p>
-<div class="sourceCode" id="cb8"><html><body><pre class="r"><span class="no">model_EBIC</span>  <span class="kw">&lt;-</span> <span class="no">out</span>$<span class="no">models</span><span class="kw">[[</span><span class="fu"><a href="https://rdrr.io/r/base/which.min.html">which.max</a></span>(<span class="no">out</span>$<span class="no">criteria</span>$<span class="no">EBIC</span>)]]
+<div class="sourceCode" id="cb8"><html><body><pre class="r"><span class="no">model_EBIC</span>  <span class="kw">&lt;-</span> <span class="no">out</span>$<span class="no">models</span><span class="kw">[[</span><span class="fu"><a href="https://rdrr.io/r/base/which.min.html">which.min</a></span>(<span class="no">out</span>$<span class="no">criteria</span>$<span class="no">BIC</span>)]]
 <span class="no">model_dense</span> <span class="kw">&lt;-</span> <span class="no">out</span>$<span class="no">models</span><span class="kw">[[</span><span class="fu"><a href="https://rdrr.io/r/base/length.html">length</a></span>(<span class="no">out</span>$<span class="no">models</span>)]]</pre></body></html></div>
 <div class="sourceCode" id="cb9"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/graphics/par.html">par</a></span>(<span class="kw">mfrow</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">3</span>,<span class="fl">2</span>))
 <span class="fu"><a href="https://rdrr.io/pkg/corrplot/man/corrplot.html">corrplot</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/matrix.html">as.matrix</a></span>(<span class="no">Omega</span>), <span class="kw">is.corr</span> <span class="kw">=</span> <span class="fl">FALSE</span>, <span class="kw">tl.pos</span> <span class="kw">=</span> <span class="st">"n"</span>, <span class="kw">method</span> <span class="kw">=</span> <span class="st">'color'</span>, <span class="kw">type</span> <span class="kw">=</span> <span class="st">"upper"</span>, <span class="kw">diag</span> <span class="kw">=</span> <span class="fl">FALSE</span>, <span class="kw">title</span> <span class="kw">=</span> <span class="st">"TRUE precision"</span>)
