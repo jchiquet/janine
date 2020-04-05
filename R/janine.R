@@ -6,6 +6,7 @@
 #' @param n_blocks integer for the targetnumber of groups
 #' @param penalties a vector of postive real number in decreasing order tuning the network sparsity. The default (NULL) generates
 #' an hopefully appropriate collection of penalties.
+#' @param alpha a positive scalar tuning the mixture between the weighted-sparse penlaty and the trace-Laplacian regularisation.
 #' @param control_penalties a list controling how \code{penalties} is generated, with three entries:
 #' a double \code{min_ratio} (default 0.1), a integer \code{length} (default 25) and a logical \code{diagonal} (default FALSE)
 #' indicating weither the diaognal should be penalized or not.

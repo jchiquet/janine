@@ -22,6 +22,8 @@ janine(
 \item{penalties}{a vector of postive real number in decreasing order tuning the network sparsity. The default (NULL) generates
 an hopefully appropriate collection of penalties.}
 
+\item{alpha}{a positive scalar tuning the mixture between the weighted-sparse penlaty and the trace-Laplacian regularisation.}
+
 \item{control_optim}{a list controling how the alternate optimization between adaptive graphical-Lasso and SBM is conducted
 for each penalty level. Contains three entries: a convergence threshold \code{epsilon} (default to 1e-3),
 a maximal number of iteration \code{max_iter} (default 20) and verbosity level \code{trace} (default 1).}
