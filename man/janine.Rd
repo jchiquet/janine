@@ -47,5 +47,5 @@ Omega <- rggm::graph2prec(mySBM, cond_var = rep(1, nNodes), neg_prop = 0.5)
 n <- 500
 X <- rggm::rmgaussian(n, means = rep(0, nNodes), solve(Omega))
 ## Network inference
-out <- janine(X, n_blocks = 3, penalties = 0.1)
+out <- janine(X, n_blocks = 3, penalties = 0.1, control_optim = list(n_cores = 1))
 }

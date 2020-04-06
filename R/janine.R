@@ -28,7 +28,7 @@
 #' n <- 500
 #' X <- rggm::rmgaussian(n, means = rep(0, nNodes), solve(Omega))
 #' ## Network inference
-#' out <- janine(X, n_blocks = 3, penalties = 0.1)
+#' out <- janine(X, n_blocks = 3, penalties = 0.1, control_optim = list(n_cores = 1))
 #' @export
 janine <- function(data, n_blocks, penalties = NULL, alpha = 0,
                    control_optim = list(epsilon = 1e-4, max_iter = 20, trace = 1, n_cores = 4),

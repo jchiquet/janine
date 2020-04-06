@@ -7,7 +7,7 @@
 coefficient_path(x, type = c("partial_cor", "precision", "covariance"))
 }
 \arguments{
-\item{x}{an object with class PLNnetworkfamily, i.e. an output from \code{\link{PLNnetwork}}}
+\item{x}{an object with class \code{janine_collection}}
 
 \item{type}{a character, should we extract the path of covariance, precision or partial correlation coefficients ? Default is \code{partial_cor}.}
 }

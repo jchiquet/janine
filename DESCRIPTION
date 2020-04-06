@@ -1,6 +1,6 @@
 Package: janine
 Title: Just Another Network INference mEthod
-Version: 0.1-9000
+Version: 0.2-9000
 Authors@R: 
     person(given = "Julien",
            family = "Chiquet",
@@ -17,6 +17,8 @@ Imports:
     igraph,
     corrplot,
     ggplot2,
+    rlang,
+    tidyselect,
     blockmodels,
     glassoFast,
     methods,

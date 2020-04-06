@@ -38,7 +38,7 @@ plot.janine_fit <- function(x, type= c("partial_cor", "precision", "covariance",
 #' @param x an object with class janine_collection
 #' @param crit a character for the criterion used to performed the selection. Either
 #' "BIC", "EBIC" or "loglik". Default is \code{BIC}.
-#' @return  Send back an object with class \code{\link[=janine_fit]{janine_fit}}
+#' @return  Send back an object with class \code{janine_fit}
 #' @export
 select_model <- function(x, crit = c("BIC", "EBIC", "loglik")) {UseMethod("select_model", x)}
 #' @export
@@ -62,16 +62,17 @@ select_model.janine_collection <- function(x, crit = c("BIC", "EBIC", "loglik"))
 #' @param ... use for S3 compatibility
 #' @importFrom dplyr select group_by mutate
 #' @importFrom tidyr gather
+#' @importFrom tidyselect all_of
 #' @import ggplot2
 #' @export
 plot.janine_collection <- function(x, criteria = c("loglik", "BIC", "EBIC"), log.x = TRUE, ...) {
   stopifnot(is_janine_collection(x))
   dplot <- x$criteria %>%
-    mutate(loglik = -2 * loglik) %>%
+    mutate(loglik = -2 * .data$loglik) %>%
     dplyr::select(c("penalty", all_of(criteria))) %>%
     tidyr::gather(key = "criterion", value = "value", -penalty) %>%
-    dplyr::group_by(criterion)
-  p <- ggplot(dplot, aes(x = penalty, y = value, group = criterion, colour = criterion)) +
+    dplyr::group_by(.data$criterion)
+  p <- ggplot(dplot, aes_string(x = "penalty", y = "value", group = "criterion", colour = "criterion")) +
     geom_line() + geom_point() + ggtitle("Model selection criteria") + theme_bw() + xlab("penalty")
   if (log.x) p <- p + ggplot2::coord_trans(x = "log10")
   p
@@ -81,12 +82,14 @@ plot.janine_collection <- function(x, criteria = c("loglik", "BIC", "EBIC"), log
 #' Extract the regularization path of a collection of fits
 #'
 #' @name coefficient_path
-#' @param x an object with class PLNnetworkfamily, i.e. an output from \code{\link{PLNnetwork}}
+#' @param x an object with class \code{janine_collection}
 #' @param type a character, should we extract the path of covariance, precision or partial correlation coefficients ? Default is \code{partial_cor}.
 #' @importFrom dplyr filter bind_rows
+#' @importFrom stats setNames
 #' @return  Send back a tibble/data.frame.
 #' @export
 coefficient_path <- function(x, type = c("partial_cor", "precision", "covariance")) {UseMethod("coefficient_path", x)}
+#' @importFrom rlang .data
 #' @export
 coefficient_path.janine_collection <- function(x, type = c("partial_cor", "precision", "covariance")) {
   type <- match.arg(type)
@@ -109,10 +112,10 @@ coefficient_path.janine_collection <- function(x, type = c("partial_cor", "preci
         as.vector(G)), c("Node1", "Node2", "Coeff")
     ) %>%
       mutate(Penalty = model$penalty,
-             Node1   = as.character(Node1),
-             Node2   = as.character(Node2),
-             Edge    = paste0(Node1, "|", Node2)) %>%
-      dplyr::filter(Node1 < Node2)
+             Node1   = as.character(.data$Node1),
+             Node2   = as.character(.data$Node2),
+             Edge    = paste0(.data$Node1, "|", .data$Node2)) %>%
+      dplyr::filter(.data$Node1 < .data$Node2)
   }) %>% bind_rows()
 }
 

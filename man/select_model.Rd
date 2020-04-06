@@ -13,7 +13,7 @@ select_model(x, crit = c("BIC", "EBIC", "loglik"))
 "BIC", "EBIC" or "loglik". Default is \code{BIC}.}
 }
 \value{
-Send back an object with class \code{\link[=janine_fit]{janine_fit}}
+Send back an object with class \code{janine_fit}
 }
 \description{
 Model selection from a collection of janine fits
