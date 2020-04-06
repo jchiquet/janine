@@ -69,7 +69,7 @@ plot.janine_collection <- function(x, criteria = c("loglik", "BIC", "EBIC"), log
   stopifnot(is_janine_collection(x))
   dplot <- x$criteria %>%
     mutate(loglik = -2 * .data$loglik) %>%
-    dplyr::select(c("penalty", all_of(.data$criteria))) %>%
+    dplyr::select(c("penalty", all_of(criteria))) %>%
     tidyr::gather(key = "criterion", value = "value", -.data$penalty) %>%
     dplyr::group_by(.data$criterion)
   p <- ggplot(dplot, aes_string(x = "penalty", y = "value", group = "criterion", colour = "criterion")) +
