@@ -35,3 +35,17 @@ indicating weither the diaognal should be penalized or not.}
 \description{
 Iterate Adaptive Graphical-Lasso with binary SBM estimation to recover the adaptive weights
 }
+\examples{
+## Network settting
+nNodes  <- 90
+blockProp <- c(1/3, 1/3, 1/3)   # group proportions
+nbBlock   <- length(blockProp) # number of blocks
+connectParam <- diag(.4, nbBlock) + 0.01 # connectivity matrix: affiliation network
+mySBM <- rggm::rSBM(nNodes, connectParam, blockProp)
+Omega <- rggm::graph2prec(mySBM, cond_var = rep(1, nNodes), neg_prop = 0.5)
+## Multivariate Gaussian Vector generation
+n <- 500
+X <- rggm::rmgaussian(n, means = rep(0, nNodes), solve(Omega))
+## Network inference
+out <- janine(X, n_blocks = 3, penalties = 0.1)
+}

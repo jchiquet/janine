@@ -16,6 +16,19 @@
 #' @importFrom stats cov
 #' @importFrom utils flush.console tail
 #' @importFrom igraph laplacian_matrix graph_from_adjacency_matrix
+#' @examples
+#' ## Network settting
+#' nNodes  <- 90
+#' blockProp <- c(1/3, 1/3, 1/3)   # group proportions
+#' nbBlock   <- length(blockProp) # number of blocks
+#' connectParam <- diag(.4, nbBlock) + 0.01 # connectivity matrix: affiliation network
+#' mySBM <- rggm::rSBM(nNodes, connectParam, blockProp)
+#' Omega <- rggm::graph2prec(mySBM, cond_var = rep(1, nNodes), neg_prop = 0.5)
+#' ## Multivariate Gaussian Vector generation
+#' n <- 500
+#' X <- rggm::rmgaussian(n, means = rep(0, nNodes), solve(Omega))
+#' ## Network inference
+#' out <- janine(X, n_blocks = 3, penalties = 0.1)
 #' @export
 janine <- function(data, n_blocks, penalties = NULL, alpha = 0,
                    control_optim = list(epsilon = 1e-4, max_iter = 20, trace = 1, n_cores = 4),
@@ -32,7 +45,7 @@ janine <- function(data, n_blocks, penalties = NULL, alpha = 0,
   ctrl_penalties <- list(min_ratio = 0.1, length = 20, diagonal = TRUE, weighted = TRUE)
   ctrl_penalties[names(control_penalties)] <- control_penalties
 
-  ## this function willl be the method of a janine_fit object
+  ## this function will be the optimization method of a janine_fit object
   optim_janine <- function(lambda) {
 
     if (ctrl_optim$trace == 1) {
@@ -80,7 +93,7 @@ janine <- function(data, n_blocks, penalties = NULL, alpha = 0,
     EBIC  <- BIC + ifelse(n_edges > 0, n_edges * log(.5 * d*(d - 1)/n_edges), 0)
 
     structure(
-      list(network = net, membership = sbm, weights = weights,
+      list(network = net, block = sbm, weights = weights, penalty = lambda,
          objective = objective[1:(iter - 1)], loglik = loglik, BIC = BIC, EBIC = EBIC), class = "janine_fit")
   }
 
@@ -103,7 +116,7 @@ janine <- function(data, n_blocks, penalties = NULL, alpha = 0,
     sparsity  = sapply(models, function(model) 1 - sum(model$net$support) / (d**2)),
     n_edges   = sapply(models, function(model) sum(model$net$support)/2),
     loglik    = sapply(models, function(model) sum(model$loglik)),
-    objective = sapply(models, function(model) tail(model$objective, 1)),
+    objective = sapply(models, function(model) utils::tail(model$objective, 1)),
     BIC       = sapply(models, function(model) sum(model$BIC)),
     EBIC      = sapply(models, function(model) sum(model$EBIC))
   )

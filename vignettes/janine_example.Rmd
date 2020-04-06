@@ -20,7 +20,7 @@ knitr::opts_chunk$set(
 ```{r setup, message = FALSE}
 library(janine)   
 library(rggm)     # GGM data generation
-library(corrplot) # fancy graphical output
+library(corrplot)
 ```
 
 ## Generating Gaussian data from a Graphical Model with SBM structure
@@ -70,8 +70,8 @@ where $\hat{\mathcal{G}}$ is the current estimate of the network and $\hat{\math
 
 The overall amount of sparsity is tuned by the argument `penalties`, and the number of blocks in the SBM is fixed by argument `n_blocks`. By default, janine is fitted on a vector of penalties automaticcaly generated.
 
-```{r janine}
-out <- janine(X, n_blocks = nbBlock, # alpha = 0.1,
+```{r janine, cache = TRUE}
+fits <- janine(X, n_blocks = nbBlock, # alpha = 0.1,
               control_optim = list(n_cores = 1),
               control_penalties = list(min_ratio = 0.05))
 ```
@@ -79,18 +79,14 @@ out <- janine(X, n_blocks = nbBlock, # alpha = 0.1,
 In this setting, the criteria looks good but probably need to be adapted cause they choose a too sparse model
 
 ```{r criteria_plot}
-plot(out$criteria$penalty, -2*out$criteria$loglik, type = "b", xlab = 'iteration', ylab = 'criteria', log = "x")
-lines(out$criteria$penalty, out$criteria$BIC, col = "red")
-lines(out$criteria$penalty, out$criteria$EBIC, col = "blue")
-legend('bottomright', bty = "n", c("-2Loglik", "BIC", "EBIC"), col = c("black", "red", "blue"), lty = c(1,1,1))
-abline(v = c(out$criteria$penalty[which.min(out$criteria$EBIC)],out$criteria$penalty[which.min(out$criteria$BIC)]), lty = "dotted")
+plot(fits)
 ```
 
 The estimation is visually good too if we consider the more dense model, so we need to think a bit more about the model selection issue.
 
 ```{r model selection}
-model_EBIC  <- out$models[[which.min(out$criteria$BIC)]]
-model_dense <- out$models[[length(out$models)]]
+model_EBIC  <- select_model(fits, "EBIC")
+model_dense <- select_model(fits, "loglik")
 ```
 
 
@@ -98,10 +94,10 @@ model_dense <- out$models[[length(out$models)]]
 par(mfrow = c(3,2))
 corrplot(as.matrix(Omega), is.corr = FALSE, tl.pos = "n", method = 'color', type = "upper", diag = FALSE, title = "TRUE precision")
 corrplot(as.matrix(Sigma), is.corr = FALSE, tl.pos = "n", method = 'color', type = "upper", diag = FALSE, title = "TRUE variance")
-corrplot(model_EBIC$net$Omega, is.corr = FALSE, tl.pos = "n", method = 'color', type = "upper", diag = FALSE, title = "Estimated precision")
-corrplot(model_EBIC$net$Sigma, is.corr = FALSE, tl.pos = "n", method = 'color', type = "upper", diag = FALSE, title = "Estimated variance")
-corrplot(model_dense$net$Omega, is.corr = FALSE, tl.pos = "n", method = 'color', type = "upper", diag = FALSE, title = "Estimated precision")
-corrplot(model_dense$net$Sigma, is.corr = FALSE, tl.pos = "n", method = 'color', type = "upper", diag = FALSE, title = "Estimated variance")
+plot(model_EBIC, type = "precision", title = "EBIC precision")
+plot(model_EBIC, type = "covariance", title = "EBIC covariance")
+plot(model_dense, type = "precision", title = "Best loglik precision")
+plot(model_dense, type = "covariance", title = "Best loglik covariance")
 ```
 
 ## TODO

@@ -15,13 +15,16 @@ RoxygenNote: 7.1.0
 Imports: 
     Matrix,
     igraph,
+    corrplot,
+    ggplot2,
     blockmodels,
     glassoFast,
     methods,
+    dplyr,
+    tidyr,
     magrittr
 Remotes: jchiquet/rggm
 Suggests: 
-    corrplot,
     knitr,
     rggm,
     rmarkdown
