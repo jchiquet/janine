@@ -84,16 +84,22 @@
 
       </header><div class="row">
   <div class="contents col-md-9">
-<div id="janine" class="section level1">
+<div id="janine-just-another-network-inference-method" class="section level1">
 <div class="page-header"><h1 class="hasAnchor">
-<a href="#janine" class="anchor"></a>janine</h1></div>
+<a href="#janine-just-another-network-inference-method" class="anchor"></a>Janine: Just Another Network INference mEthod ?</h1></div>
 
-<p>The goal of janine is to perform sparse network reconstruction when the underlying network is supposed to have a SBM-Laplace distribution.</p>
+<p>The goal of janine is to perform network reconstruction by estimating the support of the precision matrix in a Gaussian graphical model, with the additional assumption that the underlying graph is organized according to a Stochastic Block Model (SBM). This SBM can possibly be multipartite when the target network concerns entities of different natures (like proteins and genes in genomics, or bacteria and fungi in microbial ecology), but associated to the same individuals (samples of patients or plant ecosystem for instance).</p>
+<p>To adjust the model, with us weighted sparse technique possibly coupled with graph-Laplacian-guided regularization. The weigths and the graph-Laplacian are themselves estiamted with SBMs, in an iterative process.</p>
 <div id="installation" class="section level2">
 <h2 class="hasAnchor">
 <a href="#installation" class="anchor"></a>Installation</h2>
 <p>You can install the development version of janine from github</p>
 <div class="sourceCode" id="cb1"><pre class="r"><span class="kw pkg">remotes</span><span class="kw ns">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html">install_github</a></span>(<span class="st">"jchiquet/janine"</span>)</pre></div>
+</div>
+<div id="reference" class="section level2">
+<h2 class="hasAnchor">
+<a href="#reference" class="anchor"></a>Reference</h2>
+<p>Janine is a self private joke/reference to an older R package called <a href="https://cran.r-project.org/package=simone">simone</a>, which has the same idea of driving network inference according to an underlying latent and unobserved organization of the network. We use a different rationale here which is more efficient and generalize to a wider class of SBM, in particular multipartite SBM.</p>
 </div>
 </div>
   </div>
@@ -128,7 +134,7 @@
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
 </div>
 
       </footer>

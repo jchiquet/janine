@@ -137,7 +137,7 @@ This function uses a variational EM algorithm implemented in the package blockmo
 This function uses a variational EM algorithm implemented in the package blockmodels to estimate such a model.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>estimate_block</span>(<span class='no'>adj_matrix</span>, <span class='no'>n_blocks</span>, <span class='no'>n_cores</span>)</pre>
+    <pre class="usage"><span class='fu'>estimate_block</span>(<span class='no'>adj_matrix</span>, <span class='kw'>n_blocks</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>n_cores</span> <span class='kw'>=</span> <span class='fl'>1</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -148,7 +148,7 @@ This function uses a variational EM algorithm implemented in the package blockmo
     </tr>
     <tr>
       <th>n_blocks</th>
-      <td><p>integer, the number of blocks</p></td>
+      <td><p>integer, the number of blocks. Default is NULL, in which case the best model in terms of ICL is returned.</p></td>
     </tr>
     <tr>
       <th>n_cores</th>
@@ -172,7 +172,7 @@ This function uses a variational EM algorithm implemented in the package blockmo
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
 </div>
 
       </footer>
