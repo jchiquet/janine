@@ -1,19 +1,33 @@
+### TODO
+## ADD SBM representation
+## REORDER ACCORDING TO BLOCKS
+
 #' Estimation of the latent block organisation of the network
 #'
 #' The underlying network is assumed to be drawn from a Stochastic Bloc Model.
 #' This function uses a variational EM algorithm implemented in the package blockmodels to estimate such a model.
 #'
 #' @param adj_matrix a symmetric weighted adjacency matrix
-#' @param n_blocks  integer, the number of blocks
+#' @param n_blocks  integer, the number of blocks. Default is NULL, in which case the best model in terms of ICL is returned.
 #' @param n_cores  integer, the number of cores used for initializing the SBM exploration
 #' @import blockmodels
 #' @export
-estimate_block <- function(adj_matrix, n_blocks, n_cores){
+estimate_block <- function(adj_matrix, n_blocks = NULL, n_cores = 1){
 
   stopifnot(sum(adj_matrix) != 0)
 
-  SBM_fits <- BM_bernoulli("SBM", adj_matrix, verbosity = 0, plotting="", explore_min = n_blocks, ncores = n_cores)
+
+  SBM_fits <- BM_bernoulli(
+    membership_type = "SBM",
+    adj             = adj_matrix,
+    verbosity       = 0,
+    plotting        = "",
+    explore_min     = ifelse(is.null(n_blocks), 4, n_blocks),
+    ncores          = n_cores
+  )
   { sink("/dev/null"); SBM_fits$estimate() ; sink() }
+
+  n_blocks <- ifelse(is.null(n_blocks), which.max(SBM_fits$ICL), n_blocks)
 
   res <- list(
     blockProb   = SBM_fits$memberships[[n_blocks]]$Z,
@@ -22,7 +36,6 @@ estimate_block <- function(adj_matrix, n_blocks, n_cores){
     parameters  = SBM_fits$model_parameters[[n_blocks]]
   )
 }
-
 
 # entropy <- function(distr) {
 #   ## handle x log(x) = 0 when x = 0

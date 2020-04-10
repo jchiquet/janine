@@ -63,7 +63,7 @@ X <- rmgaussian(n, means, Sigma)
 `Janine` (a reference to the `Simone` package, from which Janine is a reload/remake), specially targeting GGM inference with underlying blockwise pattern governed by an SBM. The inference alternate adaptive graphical-LASSO and SBM with variational EM. The weigths in the graphical-Lasso are
 
 \begin{equation}
-  w_{ij} = \frac{\left(1 - \hat{\mathbb{P}}(i \leftrightarrow j)\right)}{1 - \mathrm{density}(\hat{\mathcal{G}})},
+  w_{ij} = \frac{\left(1 - \hat{\mathbb{P}}(i \leftrightarrow j | G \sim \mathrm{SBM})\right)}{1 - \mathrm{density}(\hat{\mathcal{G}})},
 \end{equation}
 
 where $\hat{\mathcal{G}}$ is the current estimate of the network and $\hat{\mathbb{P}}(i \leftrightarrow j)$ is the estimated probability of connection between any dyad under the fitted SBM (that is, conditional on the block of the nodes).
@@ -71,9 +71,9 @@ where $\hat{\mathcal{G}}$ is the current estimate of the network and $\hat{\math
 The overall amount of sparsity is tuned by the argument `penalties`, and the number of blocks in the SBM is fixed by argument `n_blocks`. By default, janine is fitted on a vector of penalties automaticcaly generated.
 
 ```{r janine, results="hide"}
-fits <- janine(X, n_blocks = nbBlock, # alpha = 0.1,
+fits <- janine(X, # alpha = 0.1,
               control_optim = list(n_cores = 1),
-              control_penalties = list(min_ratio = 0.05))
+              control_penalties = list(min_ratio = 0.075))
 ```
 
 In this setting, the criteria looks good but probably need to be adapted cause they choose a too sparse model
@@ -86,18 +86,14 @@ The estimation is visually good too if we consider the more dense model, so we n
 
 ```{r model selection}
 model_BIC  <- select_model(fits, "BIC")
-model_dense <- select_model(fits, "loglik")
 ```
 
-
 ```{r plot_estimators}
-par(mfrow = c(3,2))
+par(mfrow = c(2,2))
 corrplot(as.matrix(Omega), is.corr = FALSE, tl.pos = "n", method = 'color', type = "upper", diag = FALSE, title = "TRUE precision")
 corrplot(as.matrix(Sigma), is.corr = FALSE, tl.pos = "n", method = 'color', type = "upper", diag = FALSE, title = "TRUE variance")
-plot(model_BIC, type = "precision", title = "EBIC precision")
-plot(model_BIC, type = "covariance", title = "EBIC covariance")
-plot(model_dense, type = "precision", title = "Best loglik precision")
-plot(model_dense, type = "covariance", title = "Best loglik covariance")
+plot(model_BIC, type = "precision", title = "Estimated precision")
+plot(model_BIC, type = "covariance", title = "Estimated covariance")
 ```
 
 ## TODO

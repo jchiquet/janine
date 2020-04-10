@@ -4,12 +4,12 @@
 \alias{estimate_block}
 \title{Estimation of the latent block organisation of the network}
 \usage{
-estimate_block(adj_matrix, n_blocks, n_cores)
+estimate_block(adj_matrix, n_blocks = NULL, n_cores = 1)
 }
 \arguments{
 \item{adj_matrix}{a symmetric weighted adjacency matrix}
 
-\item{n_blocks}{integer, the number of blocks}
+\item{n_blocks}{integer, the number of blocks. Default is NULL, in which case the best model in terms of ICL is returned.}
 
 \item{n_cores}{integer, the number of cores used for initializing the SBM exploration}
 }

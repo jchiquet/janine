@@ -6,7 +6,7 @@
 \usage{
 janine(
   data,
-  n_blocks,
+  n_blocks = NULL,
   penalties = NULL,
   alpha = 0,
   control_optim = list(epsilon = 1e-04, max_iter = 20, trace = 1, n_cores = 4),
@@ -17,7 +17,7 @@ janine(
 \arguments{
 \item{data}{a n x d matrix of multivariate Gaussian observation}
 
-\item{n_blocks}{integer for the targetnumber of groups}
+\item{n_blocks}{integer for the target number of groups. If NULL (the default), will be chosen automatically internally by ICL in the SBM fit.}
 
 \item{penalties}{a vector of postive real number in decreasing order tuning the network sparsity. The default (NULL) generates
 an hopefully appropriate collection of penalties.}
@@ -37,15 +37,16 @@ Iterate Adaptive Graphical-Lasso with binary SBM estimation to recover the adapt
 }
 \examples{
 ## Network settting
-nNodes  <- 90
+nNodes  <- 60
 blockProp <- c(1/3, 1/3, 1/3)   # group proportions
 nbBlock   <- length(blockProp) # number of blocks
 connectParam <- diag(.4, nbBlock) + 0.01 # connectivity matrix: affiliation network
 mySBM <- rggm::rSBM(nNodes, connectParam, blockProp)
 Omega <- rggm::graph2prec(mySBM, cond_var = rep(1, nNodes), neg_prop = 0.5)
 ## Multivariate Gaussian Vector generation
-n <- 500
+n <- 300
 X <- rggm::rmgaussian(n, means = rep(0, nNodes), solve(Omega))
 ## Network inference
-out <- janine(X, n_blocks = 3, penalties = 0.1, control_optim = list(n_cores = 1))
+fits <- janine(X, penalties = 0.1, control_optim = list(n_cores = 1))
+plot(fits$models[[1]])
 }

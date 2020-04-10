@@ -2,7 +2,7 @@
 is_janine_fit <- function(x) (class(x) == "janine_fit")
 is_janine_collection <- function(x) (class(x) == "janine_collection")
 
-#' Extract and plot the network (partial correlation, support or inverse covariance) from a \code{janine_fit} object
+#' Extract and plot the parameters (partial correlation, support or inverse covariance) from a \code{janine_fit} object
 #'
 #' @name plot.janine_fit
 #'
@@ -33,7 +33,7 @@ plot.janine_fit <- function(x, type= c("partial_cor", "precision", "covariance",
 
 }
 
-#' Model selection from a collection of janine fits
+#' Model selection from a collection of fits
 #'
 #' @param x an object with class janine_collection
 #' @param crit a character for the criterion used to performed the selection. Either

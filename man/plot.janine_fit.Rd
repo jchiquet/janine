@@ -2,7 +2,7 @@
 % Please edit documentation in R/S3-methods.R
 \name{plot.janine_fit}
 \alias{plot.janine_fit}
-\title{Extract and plot the network (partial correlation, support or inverse covariance) from a \code{janine_fit} object}
+\title{Extract and plot the parameters (partial correlation, support or inverse covariance) from a \code{janine_fit} object}
 \usage{
 \method{plot}{janine_fit}(
   x,
@@ -24,5 +24,5 @@
 Send back an invisible object (igraph or Matrix, depending on the output chosen) and optionaly displays a graph (via igraph or corrplot for large ones)
 }
 \description{
-Extract and plot the network (partial correlation, support or inverse covariance) from a \code{janine_fit} object
+Extract and plot the parameters (partial correlation, support or inverse covariance) from a \code{janine_fit} object
 }

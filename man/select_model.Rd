@@ -2,7 +2,7 @@
 % Please edit documentation in R/S3-methods.R
 \name{select_model}
 \alias{select_model}
-\title{Model selection from a collection of janine fits}
+\title{Model selection from a collection of fits}
 \usage{
 select_model(x, crit = c("BIC", "EBIC", "loglik"))
 }
@@ -16,5 +16,5 @@ select_model(x, crit = c("BIC", "EBIC", "loglik"))
 Send back an object with class \code{janine_fit}
 }
 \description{
-Model selection from a collection of janine fits
+Model selection from a collection of fits
 }
