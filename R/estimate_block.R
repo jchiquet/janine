@@ -1,7 +1,3 @@
-### TODO
-## ADD SBM representation
-## REORDER ACCORDING TO BLOCKS
-
 #' Estimation of the latent block organisation of the network
 #'
 #' The underlying network is assumed to be drawn from a Stochastic Bloc Model.
@@ -16,7 +12,6 @@ estimate_block <- function(adj_matrix, n_blocks = NULL, n_cores = 1){
 
   stopifnot(sum(adj_matrix) != 0)
 
-
   SBM_fits <- BM_bernoulli(
     membership_type = "SBM",
     adj             = adj_matrix,
@@ -25,7 +20,11 @@ estimate_block <- function(adj_matrix, n_blocks = NULL, n_cores = 1){
     explore_min     = ifelse(is.null(n_blocks), 4, n_blocks),
     ncores          = n_cores
   )
-  { sink("/dev/null"); SBM_fits$estimate() ; sink() }
+
+  ## call to block model avoiding any output
+  {
+    sink("/dev/null"); SBM_fits$estimate() ; sink()
+  }
 
   n_blocks <- ifelse(is.null(n_blocks), which.max(SBM_fits$ICL), n_blocks)
 
@@ -37,67 +36,40 @@ estimate_block <- function(adj_matrix, n_blocks = NULL, n_cores = 1){
   )
 }
 
-# entropy <- function(distr) {
-#   ## handle x log(x) = 0 when x = 0
-#   -sum(distr * log(distr + 1*(distr == 0)))
-# }
-#
-# estimate_structure <- function(adj_matrix, n_blocks, init_clustering = kmeans(adj_matrix, centers = n_blocks, nstart = 10)$cl, threshold = 1e-5, max_iterates = 50){
-#
-#   ## Initialization
-#   p <- ncol(adj_matrix)
-#   J <- vector("numeric", max_iterates)
-#   zero  <- .Machine$double.threshold
-#
-#   ### variational lower bound
-#   get_J <- function(theta, tau){
-#     J <- sum( tau %*% log(theta$alpha) ) + entropy(tau) -
-#        sum( tau %*%  log(2*theta$Lambda) %*% t(tau) + abs(adj_matrix) * tau %*% (1/theta$Lambda) %*% t(tau) )
-#     J
-#   }
-#
-#   ### M step: update theta (pi and alpha)
-#   M_step <- function(tau){
-#     Lambda <- (t(tau) %*% abs(adj_matrix) %*% tau) / (t(tau) %*% (1 - diag(1, p, p)) %*% tau)
-#     alpha <- colMeans(tau)
-#     alpha[alpha < zero] <- zero
-#     list(Lambda = Lambda, alpha = alpha)
-#   }
-#
-#   ### E step: update the clustering parameters (tau)
-#   E_step <- function(theta, tau){
-#     alpha  <- theta$alpha
-#     Lambda <- theta$Lambda
-#     tau <- matrix(log(alpha), p, n_blocks, byrow = TRUE) -
-#               (1 - diag(1, p, p)) %*% tau %*% log(2 * theta$Lambda) - abs(adj_matrix) %*% tau %*% (1/theta$Lambda)
-#     tau <- exp(tau - apply(tau, 1, max))
-#     tau <- tau/rowSums(tau)
-#     tau
-#   }
-#
-#   VEM <- function(tau) {
-#     cond <- FALSE; iter <- 0
-#     while (!cond){
-#       iter <- iter +1
-#       theta <- M_step(tau)
-#       # E step
-#       tau <- E_step(theta, tau) # M step
-#
-#       J[iter] <- get_J(theta, tau) # assess convergence
-#       if (iter > 1)
-#         cond <- (iter > max_iterates) | (abs((J[iter] - J[iter-1])) < threshold)
-#     }
-#     return(list(theta = theta, tau = tau, J = J[1:iter]))
-#   }
-#
-#   tau <- matrix(0,p,n_blocks); tau[cbind(1:p, init_clustering)] <- 1
-#   best <- VEM(tau)
-#
-#   vBIC <- best$J[length(best$J)] - .5*(n_blocks*(n_blocks+1)/2)*log(p*(p - 1)/2) + (n_blocks - 1)*log(p)
-#   vICL <- vBIC - entropy(best$tau)
-#
-#   list(theta = best$theta,
-#        tau = best$tau,
-#        membership = apply(best$tau, 1, which.max),
-#        J = best$J, vICL = vICL, vBIC= vBIC)
-# }
+#' #' @import GREMLIN
+#' estimate_block.list <- function(list_adj_matrix, n_blocks = NULL, n_cores = 1){
+#'
+#'   stopifnot(sum(adj_matrix) != 0)
+#'
+#'   S <- length(list_adj_matrix)
+#'
+#'   group_names <- names(list_adj_matrix)
+#'
+#'   if (is.null(group_names)) group_names <- paste0("group_", 1:S)
+#'
+#'   list_network <- mapply(FUN = function(mat, name) { GREMLIN::defineNetwork(mat, "adj", name) })
+#'
+#'   ## call to GREMLIN avoiding any screen output
+#'   mp_SBM <- ifelse(is.null(n_blocks), multipartiteBM, multipartiteBMFixedModel)
+#'   {
+#'     sink("/dev/null")
+#'     res <- mp_SBM(
+#'             list_Net  = list_network,
+#'             v_distrib = rep("bernoulli",S),
+#'             verbose   = FALSE,
+#'             nbCores   = n_cores)
+#'     sink()
+#'   }
+#'
+#'   n_blocks <- ifelse(is.null(n_blocks), which.max(SBM_fits$ICL), n_blocks)
+#'
+#'   tau <- res$fittedModel[[1]]$paramEstim$tau
+#'
+#'   Matrix::bdiag(tau)
+#'
+#'   res <- list(
+#'     blockProb   = SBM_fits$memberships[[n_blocks]]$Z,
+#'     connectProb = (SBM_fits$prediction(n_blocks) + t(SBM_fits$prediction(n_blocks)))/2,
+#'     membership  = factor(apply(SBM_fits$memberships[[n_blocks]]$Z, 1, which.max), levels = 1:n_blocks)
+#'   )
+#' }

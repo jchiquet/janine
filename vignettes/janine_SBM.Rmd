@@ -1,8 +1,8 @@
 ---
-title: "Estimation of Gaussian Graphical Model with blockwise latent Organisation"
+title: "Estimation of Gaussian graphical model with blockwise latent structure"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Estimation of Gaussian Graphical Model with blockwise latent Organisation}
+  %\VignetteIndexEntry{Estimation of Gaussian graphical model with blockwise latent structure}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -25,14 +25,13 @@ library(corrplot)
 
 ## Generating Gaussian data from a Graphical Model with SBM structure
 
-We use the package `rggm` to draw hopefully realistic Gaussian multivariate data faithful to the graphical model of an underlying stohastic bloc model.
+We use the package `rggm` to draw hopefully realistic Gaussian multivariate data faithful to the graphical model of an underlying stochastic bloc model (SBM).
 
-
-We first define some parameter to draw the SBM:
+We first set some parameters to define an SBM:
 
 ```{r SBM setting}
 nNodes  <- 60
-blockProp <- c(1/3, 1/3, 1/3)   # group proportions
+blockProp <- c(1/3, 1/3, 1/3)  # group proportions
 nbBlock   <- length(blockProp) # number of blocks
 connectParam <- diag(.4, nbBlock) + 0.01 # connectivity matrix: affiliation network
 ```
@@ -95,7 +94,4 @@ corrplot(as.matrix(Sigma), is.corr = FALSE, tl.pos = "n", method = 'color', type
 plot(model_BIC, type = "precision", title = "Estimated precision")
 plot(model_BIC, type = "covariance", title = "Estimated covariance")
 ```
-
-## TODO
-  - Multipartite
 

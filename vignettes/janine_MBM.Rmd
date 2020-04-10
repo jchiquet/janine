@@ -1,0 +1,82 @@
+---
+title: "Estimation of Gaussian graphical model with multipartite blockwise latent structure"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Estimation of Gaussian graphical model with multipartite blockwise latent structure}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+## Preliminaries
+
+```{r setup, message = FALSE}
+library(janine)   
+library(rggm)     # GGM data generation
+library(igraph)
+library(corrplot)
+```
+
+## Generating Gaussian data from a Graphical Model with Multipartite SBM structure
+
+We use the packages `GREMLIN` and `rggm` to draw hopefully realistic Gaussian multivariate data faithful to the graphical model of an underlying multipartite stochastic bloc model (MBM).
+
+We first set some parameters to define an MBM with two partition:
+
+```{r MBM setting}
+## Two partition of nodes
+v_nNodes  <- c(60, 40)
+
+## Proporitions of blocks in each partition
+v_blockProp <- list(c(1/3, 1/3, 1/3), c(.6,.4))  # group proportions
+v_nBlocks <- c(3, 2)
+
+## Multipartite architecture  
+## - adjacency matrices for the "intra" interactions: c(1,1), c(2,2)
+## - 1 incidence matrice for the "intra" interactions: c(1,2)
+architecture <- rbind(c(1,1), c(1,2), c(2,2))
+interactions <- c("adj", "inc", "adj")
+
+## The probabilities of connection are defined inter and intra partitions
+p11 <- diag(.4, v_nBlocks[[1]]) + 0.01 # connectivity matrix: affiliation network
+p22 <- diag(.4, v_nBlocks[[2]]) + 0.01 # connectivity matrix: affiliation network
+p12 <- matrix(0.01, v_nBlocks[[1]], v_nBlocks[[2]])
+p12[1, 1] <- p12[3, 2] <- .2
+connectParam <- rbind(cbind(p11, p12), cbind(t(p12), p22))
+```
+
+The network itself is then sampled: 
+  - the first partition ("proteins") exhibits 3 blocks (intra-protein connections); 
+  - the second partition ("genes") exhibits two blocks (intra-gene connections); 
+  - and there are two blocks of connections (inter protein-gene connection) between block 1 of proteins and block 1 of genes, and block 3 of proteins and block 2 of genes. 
+
+```{r MBM structure}
+size_partitioned <- function(nbNodes, blockProp) stats::rmultinom(1, nbNodes, blockProp)
+sizes <- unlist(mapply(size_partitioned, v_nNodes, v_blockProp))
+myMBM <- igraph::sample_sbm(sum(v_nNodes), connectParam, sizes)
+myMBM <- igraph::set_vertex_attr(myMBM, "memberships", value = rep(1:length(sizes), sizes))
+myMBM <- igraph::set_vertex_attr(myMBM, "partition", value = rep(c("protein", "gene"), v_nNodes))
+myMBM <- igraph::set_vertex_attr(myMBM, "name", value = c(paste0("PROT", 1:v_nNodes[1]), paste0("GENE", 1:v_nNodes[2])))
+corrplot(as_adj(myMBM, sparse = FALSE), method = "color", is.corr=FALSE, tl.cex = .5, cl.pos = "n", type = "upper")
+```
+
+From this network we build a signed precision matrix 
+
+```{r GGM}
+Omega <- graph2prec(myMBM, cond_var = rep(1, sum(v_nNodes)), neg_prop = 0.5)
+Sigma <- solve(Omega)
+```
+
+We can finally sample some multivariate Gaussian data.
+
+```{r mv data}
+n <- 300
+means <- rep(0, sum(v_nNodes))
+X <- rmgaussian(n, means, Sigma)
+```
