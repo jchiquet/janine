@@ -2,6 +2,7 @@ pandoc: '2.2'
 pkgdown: 1.5.1
 pkgdown_sha: ~
 articles:
-  janine_example: janine_example.html
-last_built: 2020-04-10T12:13Z
+  janine_MBM: janine_MBM.html
+  janine_SBM: janine_SBM.html
+last_built: 2020-04-10T17:39Z
 

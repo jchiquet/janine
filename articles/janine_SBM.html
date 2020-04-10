@@ -5,13 +5,13 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Estimation of Gaussian Graphical Model with blockwise latent Organisation • janine</title>
+<title>Estimation of Gaussian graphical model with blockwise latent structure • janine</title>
 <!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script><!-- Bootstrap --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha256-bZLfwXAP04zRMK2BjiO8iu9pf4FbLqX6zitd+tIvLhE=" crossorigin="anonymous">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script><!-- bootstrap-toc --><link rel="stylesheet" href="../bootstrap-toc.css">
 <script src="../bootstrap-toc.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
 <!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
-<script src="../pkgdown.js"></script><meta property="og:title" content="Estimation of Gaussian Graphical Model with blockwise latent Organisation">
+<script src="../pkgdown.js"></script><meta property="og:title" content="Estimation of Gaussian graphical model with blockwise latent structure">
 <meta property="og:description" content="janine">
 <!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
@@ -85,11 +85,11 @@
       </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
-      <h1 data-toc-skip>Estimation of Gaussian Graphical Model with blockwise latent Organisation</h1>
+      <h1 data-toc-skip>Estimation of Gaussian graphical model with blockwise latent structure</h1>
             
       
       
-      <div class="hidden name"><code>janine_example.Rmd</code></div>
+      <div class="hidden name"><code>janine_SBM.Rmd</code></div>
 
     </div>
 
@@ -105,10 +105,10 @@
 <div id="generating-gaussian-data-from-a-graphical-model-with-sbm-structure" class="section level2">
 <h2 class="hasAnchor">
 <a href="#generating-gaussian-data-from-a-graphical-model-with-sbm-structure" class="anchor"></a>Generating Gaussian data from a Graphical Model with SBM structure</h2>
-<p>We use the package <code>rggm</code> to draw hopefully realistic Gaussian multivariate data faithful to the graphical model of an underlying stohastic bloc model.</p>
-<p>We first define some parameter to draw the SBM:</p>
+<p>We use the package <code>rggm</code> to draw hopefully realistic Gaussian multivariate data faithful to the graphical model of an underlying stochastic bloc model (SBM).</p>
+<p>We first set some parameters to define an SBM:</p>
 <div class="sourceCode" id="cb2"><html><body><pre class="r"><span class="no">nNodes</span>  <span class="kw">&lt;-</span> <span class="fl">60</span>
-<span class="no">blockProp</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">1</span>/<span class="fl">3</span>, <span class="fl">1</span>/<span class="fl">3</span>, <span class="fl">1</span>/<span class="fl">3</span>)   <span class="co"># group proportions</span>
+<span class="no">blockProp</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">1</span>/<span class="fl">3</span>, <span class="fl">1</span>/<span class="fl">3</span>, <span class="fl">1</span>/<span class="fl">3</span>)  <span class="co"># group proportions</span>
 <span class="no">nbBlock</span>   <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/length.html">length</a></span>(<span class="no">blockProp</span>) <span class="co"># number of blocks</span>
 <span class="no">connectParam</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/diag.html">diag</a></span>(<span class="fl">.4</span>, <span class="no">nbBlock</span>) + <span class="fl">0.01</span> <span class="co"># connectivity matrix: affiliation network</span></pre></body></html></div>
 <p>The network itself is then sampled:</p>
@@ -133,7 +133,7 @@
               <span class="kw">control_penalties</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="kw">min_ratio</span> <span class="kw">=</span> <span class="fl">0.075</span>))</pre></body></html></div>
 <p>In this setting, the criteria looks good but probably need to be adapted cause they choose a too sparse model</p>
 <div class="sourceCode" id="cb7"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.html">plot</a></span>(<span class="no">fits</span>)</pre></body></html></div>
-<p><img src="janine_example_files/figure-html/criteria_plot-1.png" width="700"></p>
+<p><img src="janine_SBM_files/figure-html/criteria_plot-1.png" width="700"></p>
 <p>The estimation is visually good too if we consider the more dense model, so we need to think a bit more about the model selection issue.</p>
 <div class="sourceCode" id="cb8"><html><body><pre class="r"><span class="no">model_BIC</span>  <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/select_model.html">select_model</a></span>(<span class="no">fits</span>, <span class="st">"BIC"</span>)</pre></body></html></div>
 <div class="sourceCode" id="cb9"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/graphics/par.html">par</a></span>(<span class="kw">mfrow</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">2</span>,<span class="fl">2</span>))
@@ -141,14 +141,7 @@
 <span class="fu"><a href="https://rdrr.io/pkg/corrplot/man/corrplot.html">corrplot</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/matrix.html">as.matrix</a></span>(<span class="no">Sigma</span>), <span class="kw">is.corr</span> <span class="kw">=</span> <span class="fl">FALSE</span>, <span class="kw">tl.pos</span> <span class="kw">=</span> <span class="st">"n"</span>, <span class="kw">method</span> <span class="kw">=</span> <span class="st">'color'</span>, <span class="kw">type</span> <span class="kw">=</span> <span class="st">"upper"</span>, <span class="kw">diag</span> <span class="kw">=</span> <span class="fl">FALSE</span>, <span class="kw">title</span> <span class="kw">=</span> <span class="st">"TRUE variance"</span>)
 <span class="fu"><a href="https://rdrr.io/r/graphics/plot.html">plot</a></span>(<span class="no">model_BIC</span>, <span class="kw">type</span> <span class="kw">=</span> <span class="st">"precision"</span>, <span class="kw">title</span> <span class="kw">=</span> <span class="st">"Estimated precision"</span>)
 <span class="fu"><a href="https://rdrr.io/r/graphics/plot.html">plot</a></span>(<span class="no">model_BIC</span>, <span class="kw">type</span> <span class="kw">=</span> <span class="st">"covariance"</span>, <span class="kw">title</span> <span class="kw">=</span> <span class="st">"Estimated covariance"</span>)</pre></body></html></div>
-<p><img src="janine_example_files/figure-html/plot_estimators-1.png" width="700"></p>
-</div>
-<div id="todo" class="section level2">
-<h2 class="hasAnchor">
-<a href="#todo" class="anchor"></a>TODO</h2>
-<ul>
-<li>Multipartite</li>
-</ul>
+<p><img src="janine_SBM_files/figure-html/plot_estimators-1.png" width="700"></p>
 </div>
   </div>
 
