@@ -31,7 +31,7 @@ We use the package `rggm` to draw hopefully realistic Gaussian multivariate data
 We first define some parameter to draw the SBM:
 
 ```{r SBM setting}
-nNodes  <- 90
+nNodes  <- 60
 blockProp <- c(1/3, 1/3, 1/3)   # group proportions
 nbBlock   <- length(blockProp) # number of blocks
 connectParam <- diag(.4, nbBlock) + 0.01 # connectivity matrix: affiliation network
@@ -53,7 +53,7 @@ Sigma <- solve(Omega)
 We can finally sample some multivariate Gaussian data.
 
 ```{r mv data}
-n <- 500
+n <- 300
 means <- rep(0, ncol(Sigma))
 X <- rmgaussian(n, means, Sigma)
 ```
@@ -70,7 +70,7 @@ where $\hat{\mathcal{G}}$ is the current estimate of the network and $\hat{\math
 
 The overall amount of sparsity is tuned by the argument `penalties`, and the number of blocks in the SBM is fixed by argument `n_blocks`. By default, janine is fitted on a vector of penalties automaticcaly generated.
 
-```{r janine}
+```{r janine, results="hide"}
 fits <- janine(X, n_blocks = nbBlock, # alpha = 0.1,
               control_optim = list(n_cores = 1),
               control_penalties = list(min_ratio = 0.05))
@@ -85,7 +85,7 @@ plot(fits)
 The estimation is visually good too if we consider the more dense model, so we need to think a bit more about the model selection issue.
 
 ```{r model selection}
-model_EBIC  <- select_model(fits, "EBIC")
+model_BIC  <- select_model(fits, "BIC")
 model_dense <- select_model(fits, "loglik")
 ```
 
@@ -94,8 +94,8 @@ model_dense <- select_model(fits, "loglik")
 par(mfrow = c(3,2))
 corrplot(as.matrix(Omega), is.corr = FALSE, tl.pos = "n", method = 'color', type = "upper", diag = FALSE, title = "TRUE precision")
 corrplot(as.matrix(Sigma), is.corr = FALSE, tl.pos = "n", method = 'color', type = "upper", diag = FALSE, title = "TRUE variance")
-plot(model_EBIC, type = "precision", title = "EBIC precision")
-plot(model_EBIC, type = "covariance", title = "EBIC covariance")
+plot(model_BIC, type = "precision", title = "EBIC precision")
+plot(model_BIC, type = "covariance", title = "EBIC covariance")
 plot(model_dense, type = "precision", title = "Best loglik precision")
 plot(model_dense, type = "covariance", title = "Best loglik covariance")
 ```
