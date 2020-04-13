@@ -72,7 +72,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">janine</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2-9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3-9000</span>
       </span>
     </div>
 
@@ -98,7 +98,10 @@
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="../articles/janine_example.html">GGM inference with latent SBM orgnization</a>
+      <a href="../articles/janine_SBM.html">GGM inference with latent SBM organization</a>
+    </li>
+    <li>
+      <a href="../articles/janine_MBM.html">GGM inference with latent MBM organization (hierarchical SBM)</a>
     </li>
   </ul>
 </li>
@@ -137,12 +140,12 @@
 
     <pre class="usage"><span class='fu'>janine</span>(
   <span class='no'>data</span>,
+  <span class='kw'>partition</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>n_blocks</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>penalties</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>alpha</span> <span class='kw'>=</span> <span class='fl'>0</span>,
-  <span class='kw'>control_optim</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='kw'>epsilon</span> <span class='kw'>=</span> <span class='fl'>1e-04</span>, <span class='kw'>max_iter</span> <span class='kw'>=</span> <span class='fl'>20</span>, <span class='kw'>trace</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>n_cores</span> <span class='kw'>=</span> <span class='fl'>4</span>),
-  <span class='kw'>control_penalties</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='kw'>min_ratio</span> <span class='kw'>=</span> <span class='fl'>0.1</span>, <span class='kw'>length</span> <span class='kw'>=</span> <span class='fl'>20</span>, <span class='kw'>diagonal</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>weighted</span> <span class='kw'>=</span>
-    <span class='fl'>TRUE</span>)
+  <span class='kw'>control_optim</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(),
+  <span class='kw'>control_penalties</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>()
 )</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -151,6 +154,11 @@
     <tr>
       <th>data</th>
       <td><p>a n x d matrix of multivariate Gaussian observation</p></td>
+    </tr>
+    <tr>
+      <th>partition</th>
+      <td><p>a factor indicating a known partition of the variables to be respected during the clustering.
+If NULL (the default), to predfined partition is consider.</p></td>
     </tr>
     <tr>
       <th>n_blocks</th>
@@ -174,7 +182,7 @@ a maximal number of iteration <code>max_iter</code> (default 20) and verbosity l
     <tr>
       <th>control_penalties</th>
       <td><p>a list controling how <code>penalties</code> is generated, with three entries:
-a double <code>min_ratio</code> (default 0.1), a integer <code>length</code> (default 25) and a logical <code>diagonal</code> (default FALSE)
+a double <code>min_ratio</code> (default 0.1), a integer <code>length</code> (default 20) and a logical <code>diagonal</code> (default TRUE)
 indicating weither the diaognal should be penalized or not.</p></td>
     </tr>
     </table>

@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">janine</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2-9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3-9000</span>
       </span>
     </div>
 
@@ -57,7 +57,10 @@
   </a>
   <ul class="dropdown-menu" role="menu">
 <li>
-      <a href="../articles/janine_example.html">GGM inference with latent SBM orgnization</a>
+      <a href="../articles/janine_SBM.html">GGM inference with latent SBM organization</a>
+    </li>
+    <li>
+      <a href="../articles/janine_MBM.html">GGM inference with latent MBM organization (hierarchical SBM)</a>
     </li>
   </ul>
 </li>
@@ -100,6 +103,7 @@
 <a href="#preliminaries" class="anchor"></a>Preliminaries</h2>
 <div class="sourceCode" id="cb1"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">janine</span>)
 <span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">rggm</span>)     <span class="co"># GGM data generation</span>
+<span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">igraph</span>)   <span class="co"># GGM data generation</span>
 <span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">corrplot</span>)</pre></body></html></div>
 </div>
 <div id="generating-gaussian-data-from-a-graphical-model-with-sbm-structure" class="section level2">
@@ -128,19 +132,16 @@
 
 <p>where <span class="math inline">\(\hat{\mathcal{G}}\)</span> is the current estimate of the network and <span class="math inline">\(\hat{\mathbb{P}}(i \leftrightarrow j)\)</span> is the estimated probability of connection between any dyad under the fitted SBM (that is, conditional on the block of the nodes).</p>
 <p>The overall amount of sparsity is tuned by the argument <code>penalties</code>, and the number of blocks in the SBM is fixed by argument <code>n_blocks</code>. By default, janine is fitted on a vector of penalties automaticcaly generated.</p>
-<div class="sourceCode" id="cb6"><html><body><pre class="r"><span class="no">fits</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/janine.html">janine</a></span>(<span class="no">X</span>, <span class="co"># alpha = 0.1,</span>
-              <span class="kw">control_optim</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="kw">n_cores</span> <span class="kw">=</span> <span class="fl">1</span>),
-              <span class="kw">control_penalties</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="kw">min_ratio</span> <span class="kw">=</span> <span class="fl">0.075</span>))</pre></body></html></div>
+<div class="sourceCode" id="cb6"><html><body><pre class="r"><span class="no">fits</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/janine.html">janine</a></span>(<span class="no">X</span>, <span class="kw">control_optim</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="kw">n_cores</span> <span class="kw">=</span> <span class="fl">1</span>))</pre></body></html></div>
 <p>In this setting, the criteria looks good but probably need to be adapted cause they choose a too sparse model</p>
 <div class="sourceCode" id="cb7"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.html">plot</a></span>(<span class="no">fits</span>)</pre></body></html></div>
 <p><img src="janine_SBM_files/figure-html/criteria_plot-1.png" width="700"></p>
 <p>The estimation is visually good too if we consider the more dense model, so we need to think a bit more about the model selection issue.</p>
 <div class="sourceCode" id="cb8"><html><body><pre class="r"><span class="no">model_BIC</span>  <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/select_model.html">select_model</a></span>(<span class="no">fits</span>, <span class="st">"BIC"</span>)</pre></body></html></div>
-<div class="sourceCode" id="cb9"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/graphics/par.html">par</a></span>(<span class="kw">mfrow</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">2</span>,<span class="fl">2</span>))
-<span class="fu"><a href="https://rdrr.io/pkg/corrplot/man/corrplot.html">corrplot</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/matrix.html">as.matrix</a></span>(<span class="no">Omega</span>), <span class="kw">is.corr</span> <span class="kw">=</span> <span class="fl">FALSE</span>, <span class="kw">tl.pos</span> <span class="kw">=</span> <span class="st">"n"</span>, <span class="kw">method</span> <span class="kw">=</span> <span class="st">'color'</span>, <span class="kw">type</span> <span class="kw">=</span> <span class="st">"upper"</span>, <span class="kw">diag</span> <span class="kw">=</span> <span class="fl">FALSE</span>, <span class="kw">title</span> <span class="kw">=</span> <span class="st">"TRUE precision"</span>)
-<span class="fu"><a href="https://rdrr.io/pkg/corrplot/man/corrplot.html">corrplot</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/matrix.html">as.matrix</a></span>(<span class="no">Sigma</span>), <span class="kw">is.corr</span> <span class="kw">=</span> <span class="fl">FALSE</span>, <span class="kw">tl.pos</span> <span class="kw">=</span> <span class="st">"n"</span>, <span class="kw">method</span> <span class="kw">=</span> <span class="st">'color'</span>, <span class="kw">type</span> <span class="kw">=</span> <span class="st">"upper"</span>, <span class="kw">diag</span> <span class="kw">=</span> <span class="fl">FALSE</span>, <span class="kw">title</span> <span class="kw">=</span> <span class="st">"TRUE variance"</span>)
-<span class="fu"><a href="https://rdrr.io/r/graphics/plot.html">plot</a></span>(<span class="no">model_BIC</span>, <span class="kw">type</span> <span class="kw">=</span> <span class="st">"precision"</span>, <span class="kw">title</span> <span class="kw">=</span> <span class="st">"Estimated precision"</span>)
-<span class="fu"><a href="https://rdrr.io/r/graphics/plot.html">plot</a></span>(<span class="no">model_BIC</span>, <span class="kw">type</span> <span class="kw">=</span> <span class="st">"covariance"</span>, <span class="kw">title</span> <span class="kw">=</span> <span class="st">"Estimated covariance"</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb9"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/graphics/par.html">par</a></span>(<span class="kw">mfrow</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">1</span>,<span class="fl">2</span>))
+<span class="fu"><a href="https://rdrr.io/pkg/corrplot/man/corrplot.html">corrplot</a></span>(<span class="fu"><a href="https://rdrr.io/pkg/igraph/man/as_adjacency_matrix.html">as_adj</a></span>(<span class="no">mySBM</span>, <span class="kw">sparse</span> <span class="kw">=</span> <span class="fl">FALSE</span>), <span class="kw">is.corr</span> <span class="kw">=</span> <span class="fl">FALSE</span>, <span class="kw">tl.pos</span> <span class="kw">=</span> <span class="st">"n"</span>, <span class="kw">method</span> <span class="kw">=</span> <span class="st">'color'</span>, <span class="kw">type</span> <span class="kw">=</span> <span class="st">"upper"</span>, <span class="kw">diag</span> <span class="kw">=</span> <span class="fl">FALSE</span>, <span class="kw">cl.pos</span> <span class="kw">=</span> <span class="st">"n"</span>)
+<span class="fu"><a href="https://rdrr.io/r/graphics/plot.html">plot</a></span>(<span class="no">model_BIC</span>, <span class="kw">type</span> <span class="kw">=</span> <span class="st">"support"</span>)
+<span class="fu"><a href="https://rdrr.io/r/graphics/title.html">title</a></span>(<span class="kw">main</span><span class="kw">=</span> <span class="st">"\n True vs estimated graph"</span>, <span class="kw">outer</span> <span class="kw">=</span> <span class="fl">TRUE</span>)</pre></body></html></div>
 <p><img src="janine_SBM_files/figure-html/plot_estimators-1.png" width="700"></p>
 </div>
   </div>
