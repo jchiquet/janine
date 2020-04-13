@@ -6,12 +6,12 @@
 \usage{
 janine(
   data,
+  partition = NULL,
   n_blocks = NULL,
   penalties = NULL,
   alpha = 0,
-  control_optim = list(epsilon = 1e-04, max_iter = 20, trace = 1, n_cores = 4),
-  control_penalties = list(min_ratio = 0.1, length = 20, diagonal = TRUE, weighted =
-    TRUE)
+  control_optim = list(),
+  control_penalties = list()
 )
 }
 \arguments{
@@ -29,7 +29,7 @@ for each penalty level. Contains three entries: a convergence threshold \code{ep
 a maximal number of iteration \code{max_iter} (default 20) and verbosity level \code{trace} (default 1).}
 
 \item{control_penalties}{a list controling how \code{penalties} is generated, with three entries:
-a double \code{min_ratio} (default 0.1), a integer \code{length} (default 25) and a logical \code{diagonal} (default FALSE)
+a double \code{min_ratio} (default 0.1), a integer \code{length} (default 20) and a logical \code{diagonal} (default TRUE)
 indicating weither the diaognal should be penalized or not.}
 }
 \description{

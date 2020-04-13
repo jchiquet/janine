@@ -4,10 +4,13 @@
 \alias{estimate_block}
 \title{Estimation of the latent block organisation of the network}
 \usage{
-estimate_block(adj_matrix, n_blocks = NULL, n_cores = 1)
+estimate_block(adj_matrix, partition = NULL, n_blocks = NULL, n_cores = 1)
 }
 \arguments{
 \item{adj_matrix}{a symmetric weighted adjacency matrix}
+
+\item{partition}{a factor indicating a known partition of the variables to be respected during the clustering.
+If NULL (the default), to predfined partition is consider.}
 
 \item{n_blocks}{integer, the number of blocks. Default is NULL, in which case the best model in terms of ICL is returned.}
 

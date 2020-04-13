@@ -1,6 +1,6 @@
 Package: janine
 Title: Just Another Network INference mEthod
-Version: 0.2-9000
+Version: 0.3-9000
 Authors@R: 
     person(given = "Julien",
            family = "Chiquet",
@@ -24,8 +24,11 @@ Imports:
     methods,
     dplyr,
     tidyr,
+    GREMLIN,
     magrittr
-Remotes: jchiquet/rggm
+Remotes: 
+    jchiquet/rggm, 
+    Demiperimetre/GREMLIN
 Suggests: 
     knitr,
     rggm,

@@ -1,3 +1,7 @@
+# janine 0.3-9000
+
+* Added partition and MBM support
+
 # janine 0.2-9000
 
 * Added S3 support (plot, select_model)

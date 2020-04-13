@@ -12,7 +12,7 @@
 #' an hopefully appropriate collection of penalties.
 #' @param alpha a positive scalar tuning the mixture between the weighted-sparse penlaty and the trace-Laplacian regularisation.
 #' @param control_penalties a list controling how \code{penalties} is generated, with three entries:
-#' a double \code{min_ratio} (default 0.1), a integer \code{length} (default 25) and a logical \code{diagonal} (default FALSE)
+#' a double \code{min_ratio} (default 0.1), a integer \code{length} (default 20) and a logical \code{diagonal} (default TRUE)
 #' indicating weither the diaognal should be penalized or not.
 #' @param control_optim a list controling how the alternate optimization between adaptive graphical-Lasso and SBM is conducted
 #' for each penalty level. Contains three entries: a convergence threshold \code{epsilon} (default to 1e-3),
@@ -35,9 +35,8 @@
 #' fits <- janine(X, penalties = 0.1, control_optim = list(n_cores = 1))
 #' plot(fits$models[[1]])
 #' @export
-janine <- function(data, n_blocks = NULL, penalties = NULL, alpha = 0,
-                   control_optim = list(epsilon = 1e-4, max_iter = 20, trace = 1, n_cores = 4),
-                   control_penalties = list(min_ratio = 0.1, length = 20, diagonal = TRUE, weighted = TRUE)
+janine <- function(data, partition = NULL, n_blocks = NULL, penalties = NULL, alpha = 0,
+                   control_optim = list(), control_penalties = list()
                    ) {
 
   ## Initialization
@@ -73,11 +72,12 @@ janine <- function(data, n_blocks = NULL, penalties = NULL, alpha = 0,
       ## E step (latent block estimation)
       if (sparsity < 1) {
         sbm <- estimate_block(net$support, n_blocks, ctrl_optim$n_cores)
+        predicted <- sbm$blockProb %*% sbm$connectParam %*% t(sbm$blockProb)
         if (ctrl_penalties$weighted) {
-          weights <- (1 - sbm$connectProb)/sparsity
+          weights <- (1 - predicted)/sparsity
           if (!ctrl_penalties$diagonal) diag(weights) <- 0
         }
-        Laplacian <- sbm$connectProb %>%
+        Laplacian <- predicted %>%
           graph_from_adjacency_matrix(weighted = TRUE, diag = FALSE, mode = "undirected") %>%
           laplacian_matrix(sparse = FALSE)
       } else {

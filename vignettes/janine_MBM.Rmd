@@ -76,7 +76,31 @@ Sigma <- solve(Omega)
 We can finally sample some multivariate Gaussian data.
 
 ```{r mv data}
-n <- 300
+n <- 500
 means <- rep(0, sum(v_nNodes))
 X <- rmgaussian(n, means, Sigma)
 ```
+
+## Network Inference with Janine
+
+`Janine` (a reference to the `Simone` package, from which Janine is a reload/remake), specially targeting GGM inference with underlying blockwise pattern governed by an SBM. The inference alternate adaptive graphical-LASSO and SBM with variational EM. The weigths in the graphical-Lasso are
+
+\begin{equation}
+  w_{ij} = \frac{\left(1 - \hat{\mathbb{P}}(i \leftrightarrow j | G \sim \mathrm{SBM})\right)}{1 - \mathrm{density}(\hat{\mathcal{G}})},
+\end{equation}
+
+where $\hat{\mathcal{G}}$ is the current estimate of the network and $\hat{\mathbb{P}}(i \leftrightarrow j)$ is the estimated probability of connection between any dyad under the fitted SBM (that is, conditional on the block of the nodes).
+
+The overall amount of sparsity is tuned by the argument `penalties`, and the number of blocks in the SBM is fixed by argument `n_blocks`. By default, janine is fitted on a vector of penalties automaticcaly generated.
+
+```{r janine, results="hide"}
+fits <- janine(X, partition = factor(rep(c("gene", "protein"), v_nNodes)), penalties = 0.125)
+```
+
+```{r plot_estimators}
+par(mfrow = c(1,2))
+corrplot(as_adj(myMBM, sparse = FALSE), method = "color", is.corr=FALSE, tl.cex = .5, cl.pos = "n", type = "upper", tl.pos = 'n')
+plot(fits$models[[1]], type = "support")
+title(main= "\n True vs estimated graph", outer = TRUE)
+```
+

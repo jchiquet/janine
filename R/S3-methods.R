@@ -8,12 +8,11 @@ is_janine_collection <- function(x) (class(x) == "janine_collection")
 #'
 #' @param x an S3 object with class janine_fit
 #' @param type character. Value of the weigth of the edges in the network, either "partial_cor" (partial correlation), "precision", "covariance" or "support" (binary). Default is \code{"partial_cor"}.
-#' @param title an optional string for the title of the plot.
 #' @param ... Not used (S3 compatibility).
 #' @import corrplot
 #' @return Send back an invisible object (igraph or Matrix, depending on the output chosen) and optionaly displays a graph (via igraph or corrplot for large ones)
 #' @export
-plot.janine_fit <- function(x, type= c("partial_cor", "precision", "covariance", "support"), title = paste(match.arg(type), "matrix"), ...) {
+plot.janine_fit <- function(x, type= c("partial_cor", "precision", "covariance", "support"), ...) {
 
   stopifnot(is_janine_fit(x))
   type   <- match.arg(type)
@@ -29,7 +28,7 @@ plot.janine_fit <- function(x, type= c("partial_cor", "precision", "covariance",
     ) %>% as.matrix()
 
   if (ncol(net) > 50) colnames(net) <- rownames(net) <- rep(" ", ncol(net))
-  corrplot(as.matrix(net), method = "color", is.corr = FALSE, tl.pos = "td", cl.pos = "n", tl.cex = 0.5, type = "upper", diag = FALSE, title = title)
+  corrplot(as.matrix(net), method = "color", is.corr = FALSE, tl.pos = "td", cl.pos = "n", tl.cex = 0.5, type = "upper", diag = FALSE, ...)
 
 }
 

@@ -20,6 +20,7 @@ knitr::opts_chunk$set(
 ```{r setup, message = FALSE}
 library(janine)   
 library(rggm)     # GGM data generation
+library(igraph)   # GGM data generation
 library(corrplot)
 ```
 
@@ -70,9 +71,7 @@ where $\hat{\mathcal{G}}$ is the current estimate of the network and $\hat{\math
 The overall amount of sparsity is tuned by the argument `penalties`, and the number of blocks in the SBM is fixed by argument `n_blocks`. By default, janine is fitted on a vector of penalties automaticcaly generated.
 
 ```{r janine, results="hide"}
-fits <- janine(X, # alpha = 0.1,
-              control_optim = list(n_cores = 1),
-              control_penalties = list(min_ratio = 0.075))
+fits <- janine(X, control_optim = list(n_cores = 1))
 ```
 
 In this setting, the criteria looks good but probably need to be adapted cause they choose a too sparse model
@@ -88,10 +87,9 @@ model_BIC  <- select_model(fits, "BIC")
 ```
 
 ```{r plot_estimators}
-par(mfrow = c(2,2))
-corrplot(as.matrix(Omega), is.corr = FALSE, tl.pos = "n", method = 'color', type = "upper", diag = FALSE, title = "TRUE precision")
-corrplot(as.matrix(Sigma), is.corr = FALSE, tl.pos = "n", method = 'color', type = "upper", diag = FALSE, title = "TRUE variance")
-plot(model_BIC, type = "precision", title = "Estimated precision")
-plot(model_BIC, type = "covariance", title = "Estimated covariance")
+par(mfrow = c(1,2))
+corrplot(as_adj(mySBM, sparse = FALSE), is.corr = FALSE, tl.pos = "n", method = 'color', type = "upper", diag = FALSE, cl.pos = "n")
+plot(model_BIC, type = "support")
+title(main= "\n True vs estimated graph", outer = TRUE)
 ```
 

@@ -5,7 +5,9 @@ warnings_are_errors: false
 latex: false
 r_check_args: --as-cran
 
-r_github_packages: jchiquet/rggm
+r_github_packages:
+  - jchiquet/rggm
+  - Demiperimetre/GREMLIN
 
 matrix:
   include:

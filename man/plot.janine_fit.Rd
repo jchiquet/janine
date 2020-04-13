@@ -4,19 +4,12 @@
 \alias{plot.janine_fit}
 \title{Extract and plot the parameters (partial correlation, support or inverse covariance) from a \code{janine_fit} object}
 \usage{
-\method{plot}{janine_fit}(
-  x,
-  type = c("partial_cor", "precision", "covariance", "support"),
-  title = paste(match.arg(type), "matrix"),
-  ...
-)
+\method{plot}{janine_fit}(x, type = c("partial_cor", "precision", "covariance", "support"), ...)
 }
 \arguments{
 \item{x}{an S3 object with class janine_fit}
 
 \item{type}{character. Value of the weigth of the edges in the network, either "partial_cor" (partial correlation), "precision", "covariance" or "support" (binary). Default is \code{"partial_cor"}.}
-
-\item{title}{an optional string for the title of the plot.}
 
 \item{...}{Not used (S3 compatibility).}
 }
