@@ -55,7 +55,7 @@ estimate_block <- function(adj_matrix, partition = NULL, n_blocks = NULL, n_core
 
     cols <- vector("list", n_grp)
     for (i in 1:n_grp) cols[[i]] <- do.call(rbind, fit$list_theta[(1:n_grp) + n_grp*(i-1)])
-    connecParam <- do.call(cbind, cols)
+    connectParam <- do.call(cbind, cols)
 
     membership <- fit$Z
     for (i in 2:n_grp) membership[[i]] <-  membership[[i]] + cumsum(fit$v_K)[i-1]

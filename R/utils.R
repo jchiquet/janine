@@ -8,15 +8,14 @@
 #' @export
 #' @importFrom magrittr %>%
 #' @usage lhs \%>\% rhs
+#' @importFrom GREMLIN defineNetwork
 NULL
 
-#' trace operator
+# trace operator
 trace <- function(A, B) { sum ( diag( A %*% B ) ) }
 
 
-
-#' turn an adjacency matrix with a partition (functional groups) to a list of networks
-#' @importFrom GREMLIN defineNetwork
+# turn an adjacency matrix with a partition (functional groups) to a list of networks
 adj_matrix2GREMLIN_format <- function(adj_matrix, partition)  {
 
   groups <- levels(partition)
