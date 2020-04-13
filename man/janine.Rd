@@ -17,6 +17,9 @@ janine(
 \arguments{
 \item{data}{a n x d matrix of multivariate Gaussian observation}
 
+\item{partition}{a factor indicating a known partition of the variables to be respected during the clustering.
+If NULL (the default), to predfined partition is consider.}
+
 \item{n_blocks}{integer for the target number of groups. If NULL (the default), will be chosen automatically internally by ICL in the SBM fit.}
 
 \item{penalties}{a vector of postive real number in decreasing order tuning the network sparsity. The default (NULL) generates

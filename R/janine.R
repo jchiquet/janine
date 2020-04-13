@@ -7,10 +7,12 @@
 #' Iterate Adaptive Graphical-Lasso with binary SBM estimation to recover the adaptive weights
 #'
 #' @param data a n x d matrix of multivariate Gaussian observation
-#' @param n_blocks integer for the target number of groups. If NULL (the default), will be chosen automatically internally by ICL in the SBM fit.
+#' @param partition a factor indicating a known partition of the variables to be respected during the clustering.
+#' If NULL (the default), to predfined partition is consider.
 #' @param penalties a vector of postive real number in decreasing order tuning the network sparsity. The default (NULL) generates
 #' an hopefully appropriate collection of penalties.
 #' @param alpha a positive scalar tuning the mixture between the weighted-sparse penlaty and the trace-Laplacian regularisation.
+#' @param n_blocks integer for the target number of groups. If NULL (the default), will be chosen automatically internally by ICL in the SBM fit.
 #' @param control_penalties a list controling how \code{penalties} is generated, with three entries:
 #' a double \code{min_ratio} (default 0.1), a integer \code{length} (default 20) and a logical \code{diagonal} (default TRUE)
 #' indicating weither the diaognal should be penalized or not.
