@@ -73,7 +73,7 @@ janine <- function(data, partition = NULL, n_blocks = NULL, penalties = NULL, al
 
       ## E step (latent block estimation)
       if (sparsity < 1) {
-        sbm <- estimate_block(net$support, n_blocks, ctrl_optim$n_cores)
+        sbm <- estimate_block(net$support, n_blocks = n_blocks, partition = partition, ctrl_optim$n_cores)
         predicted <- sbm$blockProb %*% sbm$connectParam %*% t(sbm$blockProb)
         if (ctrl_penalties$weighted) {
           weights <- (1 - predicted)/sparsity
