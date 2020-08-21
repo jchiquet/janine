@@ -45,12 +45,16 @@ estimate_block <- function(adj_matrix, partition = NULL, n_blocks = NULL, n_core
     networks <- adj_matrix2GREMLIN_format(adj_matrix, partition)
     n_grp <- nlevels(partition)
 
+    if(is.null(n_blocks)) n_blocks = c(2:4)
+
     fit <- GREMLIN::multipartiteBM(
       networks,
       v_distrib = rep('bernoulli', length(networks)),
       namesFG = levels(partition),
       nbCores = n_cores,
-      verbose = FALSE
+      verbose = FALSE,
+      v_Kmin = min(n_blocks),
+      v_Kmax = max(n_blocks)
     )$fittedModel[[1]]$paramEstim
 
     cols <- vector("list", n_grp)
